@@ -12,18 +12,27 @@ class Phase:
 
 class Game:
     def __init__(self):
-        pygame.init()
+        pygame.font.init()
         pygame.mixer.init()
-        self.screen_size = (640, 640)
+        screen_side = 640
+        button_width = 150
+        button_height = 50
+
+        self.screen_size = (screen_side, screen_side)
         self.screen = pygame.display.set_mode(self.screen_size)
         pygame.display.set_caption("Phase Music")
 
         # UI
-        self.font = pygame.font.Font(None, 36)
+        self.font = pygame.font.Font(None, 24)
         self.button_color = (0, 128, 255)
         self.button_highlight_color = (255, 100, 100)
-        self.button = pygame.Rect(220, 190, 200, 50)
-        self.button_border_color = (255, 255, 255)
+        self.button = pygame.Rect(
+            (screen_side - button_width) / 2,
+            (screen_side - button_height) / 2,
+            button_width,
+            button_height,
+        )
+        self.button_border_color = (100, 255, 255)
         self.button_border_width = 2
 
         # Music
@@ -75,10 +84,9 @@ class Game:
         self.background = pygame.transform.scale(self.background, self.screen_size)
 
     def _draw(self):
-        # Draw stretched background
         self.screen.blit(self.background, (0, 0))
 
-        # Draw button with styling
+        # Button
         pygame.draw.rect(self.screen, self.button_color, self.button)
         pygame.draw.rect(
             self.screen, self.button_border_color, self.button, self.button_border_width

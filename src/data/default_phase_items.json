@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Action Phase",
+        "thumbnail_path": "/thumbnails/action_phase.webp",
+        "audio_path": "/audio/action.mp3"
+    },
+    {
+        "name": "Encounter Phase",
+        "thumbnail_path": "/thumbnails/encounter_phase.webp",
+        "audio_path": "/audio/encounter.mp3"
+    },
+    {
+        "name": "Mythos Phase",
+        "thumbnail_path": "/thumbnails/mythos_phase.webp",
+        "audio_path": "/audio/mythos.mp3"
+    }
+]

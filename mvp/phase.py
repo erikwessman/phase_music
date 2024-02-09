@@ -14,7 +14,7 @@ class Game:
     def __init__(self):
         pygame.init()
         pygame.mixer.init()
-        self.screen_size = (640, 480)
+        self.screen_size = (640, 640)
         self.screen = pygame.display.set_mode(self.screen_size)
         pygame.display.set_caption("Phase Music")
 
@@ -61,13 +61,13 @@ class Game:
         next_phase = self.phases[next_phase_index]
 
         # Smooth transition between phases
+        next_phase.sound.play(-1)
         for vol in range(10, -1, -1):
             current_phase.sound.set_volume(vol / 10.0)
             next_phase.sound.set_volume((10 - vol) / 10.0)
-            pygame.time.delay(100)
+            pygame.time.delay(700)
 
         current_phase.sound.stop()
-        next_phase.sound.play(-1)
         self.current_phase_index = next_phase_index
 
         # Background

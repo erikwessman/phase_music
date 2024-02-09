@@ -15,21 +15,10 @@ class Game:
         pygame.font.init()
         pygame.mixer.init()
         screen_size = 640
-        button_width = 100
-        button_height = 25
 
         self.window_size = (screen_size, screen_size)
         self.screen = pygame.display.set_mode(self.window_size)
         pygame.display.set_caption("Phase Music")
-
-        # UI
-        self.font = pygame.font.Font(None, 24)
-        self.next_phase_button = pygame.Rect(
-            (screen_size - button_width) / 2,
-            (screen_size + button_height) / 2,
-            button_width,
-            button_height,
-        )
 
         # Music
         self.phases = [
@@ -53,8 +42,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.next_phase_button.collidepoint(event.pos):
-                        self._play_next_phase()
+                    self._play_next_phase()
             self._draw()
 
         pygame.quit()
@@ -80,17 +68,6 @@ class Game:
 
     def _draw(self):
         self.screen.blit(self.background, (0, 0))
-
-        # Button background
-        pygame.draw.rect(self.screen, (38, 19, 79), self.next_phase_button)
-
-        # Button text
-        next_phase_text = self.font.render("Next Phase", True, (255, 255, 255))
-        next_phase_text_rect = next_phase_text.get_rect(
-            center=self.next_phase_button.center
-        )
-        self.screen.blit(next_phase_text, next_phase_text_rect.topleft)
-
         pygame.display.flip()
 
 

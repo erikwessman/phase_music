@@ -17,6 +17,7 @@ class Game:
         screen_side = 640
         button_width = 150
         button_height = 50
+        button_spacing = 10  # Space between buttons
 
         self.screen_size = (screen_side, screen_side)
         self.screen = pygame.display.set_mode(self.screen_size)
@@ -24,16 +25,23 @@ class Game:
 
         # UI
         self.font = pygame.font.Font(None, 24)
-        self.button_color = (0, 128, 255)
+        self.button_color = (171, 171, 171)
         self.button_highlight_color = (255, 100, 100)
-        self.button = pygame.Rect(
+        self.next_phase_button = pygame.Rect(
             (screen_side - button_width) / 2,
-            (screen_side - button_height) / 2,
+            (screen_side + button_height) / 2 + button_spacing,
             button_width,
             button_height,
         )
+        self.current_phase_button = pygame.Rect(
+            (screen_side - button_width * 1.2) / 2,
+            (screen_side - button_height * 1.5) / 2 - button_spacing,
+            button_width * 1.2,
+            button_height * 1.2,
+        )
         self.button_border_color = (100, 255, 255)
         self.button_border_width = 2
+        self.current_phase_button_color = (25, 110, 55)
 
         # Music
         self.phases = [
@@ -57,7 +65,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.button.collidepoint(event.pos):
+                    if self.next_phase_button.collidepoint(event.pos):
                         self._play_next_phase()
             self._draw()
 
@@ -69,7 +77,6 @@ class Game:
         next_phase_index = (self.current_phase_index + 1) % len(self.phases)
         next_phase = self.phases[next_phase_index]
 
-        # Smooth transition between phases
         next_phase.sound.play(-1)
         for vol in range(10, -1, -1):
             current_phase.sound.set_volume(vol / 10.0)
@@ -86,24 +93,40 @@ class Game:
     def _draw(self):
         self.screen.blit(self.background, (0, 0))
 
-        # Button
-        pygame.draw.rect(self.screen, self.button_color, self.button)
+        # Next Phase Button
+        pygame.draw.rect(self.screen, self.button_color, self.next_phase_button)
         pygame.draw.rect(
-            self.screen, self.button_border_color, self.button, self.button_border_width
+            self.screen,
+            self.button_border_color,
+            self.next_phase_button,
+            self.button_border_width,
+        )
+
+        # Current Phase Button
+        pygame.draw.rect(
+            self.screen, self.current_phase_button_color, self.current_phase_button
+        )
+        pygame.draw.rect(
+            self.screen,
+            self.button_border_color,
+            self.current_phase_button,
+            self.button_border_width,
         )
 
         # Button text
-        button_text = self.font.render("Next Phase", True, (0, 0, 0))
-        text_rect = button_text.get_rect(center=self.button.center)
-        self.screen.blit(button_text, text_rect.topleft)
-
-        # Current phase text
-        phase_text = self.font.render(
-            self.phases[self.current_phase_index].name,
-            True,
-            (0, 0, 0),
+        next_phase_text = self.font.render("Next Phase", True, (0, 0, 0))
+        next_phase_text_rect = next_phase_text.get_rect(
+            center=self.next_phase_button.center
         )
-        self.screen.blit(phase_text, (20, 20))
+        self.screen.blit(next_phase_text, next_phase_text_rect.topleft)
+
+        current_phase_text = self.font.render(
+            self.phases[self.current_phase_index].name, True, (255, 255, 255)
+        )
+        current_phase_text_rect = current_phase_text.get_rect(
+            center=self.current_phase_button.center
+        )
+        self.screen.blit(current_phase_text, current_phase_text_rect.topleft)
 
         pygame.display.flip()
 

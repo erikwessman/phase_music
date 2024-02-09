@@ -9,60 +9,66 @@ class Phase:
         self.sound = pygame.mixer.Sound(audio)
 
 
-current_phase_index = 0
+class Game:
+    def __init__(self):
+        pygame.init()
+        pygame.mixer.init()
+        self.screen = pygame.display.set_mode((640, 480))
+        pygame.display.set_caption("phase music")
 
-pygame.init()
-pygame.mixer.init()
-screen = pygame.display.set_mode((640, 480))
-pygame.display.set_caption("Phase Transition")
-font = pygame.font.Font(None, 36)
-button = pygame.Rect(220, 190, 200, 100)
+        # UI
+        self.font = pygame.font.Font(None, 36)
+        self.button = pygame.Rect(220, 190, 200, 100)
 
-phases: list[Phase] = [
-    Phase("Action", "audio/action.mp3"),
-    Phase("Encounter", "audio/encounter.mp3"),
-    # Phase("Mythos", "audio/mythos.mp3"),
-]
+        # Music
+        self.phases = [
+            Phase("Action", "audio/action.mp3"),
+            Phase("Encounter", "audio/encounter.mp3"),
+            # Phase("Mythos", "audio/mythos.mp3"),
+        ]
+        self.current_phase_index = 0
+        self.phases[self.current_phase_index].sound.set_volume(1.0)
 
-phases[current_phase_index].sound.set_volume(1.0)
+    def run(self):
+        running = True
+        self.phases[self.current_phase_index].sound.play(-1)
 
-def play_next_phase():
-    global current_phase_index
-    current_phase = phases[current_phase_index]
-    next_phase_index = (current_phase_index + 1) % len(phases)
-    next_phase = phases[next_phase_index]
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.button.collidepoint(event.pos):
+                        self._play_next_phase()
+            self._draw()
 
-    for vol in range(10, -1, -1):
-        current_phase.sound.set_volume(vol / 10.0)
-        next_phase.sound.set_volume((10 - vol) / 10.0)
-        pygame.time.delay(100)
+        pygame.quit()
+        sys.exit()
 
-    current_phase.sound.stop()
-    next_phase.sound.play(-1)
-    current_phase_index = next_phase_index
+    def _play_next_phase(self):
+        current_phase = self.phases[self.current_phase_index]
+        next_phase_index = (self.current_phase_index + 1) % len(self.phases)
+        next_phase = self.phases[next_phase_index]
 
+        for vol in range(10, -1, -1):
+            current_phase.sound.set_volume(vol / 10.0)
+            next_phase.sound.set_volume((10 - vol) / 10.0)
+            pygame.time.delay(100)
 
-def main():
-    running = True
-    phases[current_phase_index].sound.play(-1)
+        current_phase.sound.stop()
+        next_phase.sound.play(-1)
+        self.current_phase_index = next_phase_index
 
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if button.collidepoint(event.pos):
-                    play_next_phase()
-
-        screen.fill((255, 255, 255))
-        pygame.draw.rect(screen, (0, 0, 255), button)
-        text = font.render(phases[current_phase_index].name, True, (255, 255, 255))
-        screen.blit(text, (button.x + 50, button.y + 40))
+    def _draw(self):
+        self.screen.fill((255, 255, 255))
+        pygame.draw.rect(self.screen, (0, 0, 255), self.button)
+        text = self.font.render(
+            self.phases[self.current_phase_index].name, True, (255, 255, 255)
+        )
+        self.screen.blit(text, (self.button.x + 50, self.button.y + 40))
         pygame.display.flip()
-
-    pygame.quit()
-    sys.exit()
 
 
 if __name__ == "__main__":
-    main()
+    game = Game()
+    game.run()

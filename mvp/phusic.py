@@ -14,6 +14,7 @@ class Game:
     _TOTAL_FADE_STEPS = 255
     _TRANSITION_DURATION = 6
     _FPS = 60
+    _WINDOWED_SIZE = (1280, 720)
 
     def __init__(self):
         pygame.font.init()
@@ -36,8 +37,8 @@ class Game:
         ]
 
         # Window
-        self.window_size = (1280, 720)
-        self.screen = pygame.display.set_mode(self.window_size)
+        self.window_size = self._WINDOWED_SIZE
+        self.screen = pygame.display.set_mode(self._WINDOWED_SIZE)
         pygame.display.set_caption("phusic")
 
         # Setup state
@@ -77,7 +78,13 @@ class Game:
         if self.is_fullscreen:
             self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         else:
-            self.screen = pygame.display.set_mode(self.window_size)
+            self.screen = pygame.display.set_mode(self._WINDOWED_SIZE)
+
+        # Scale background
+        self.window_size = self.screen.get_size()
+        phase = self.phases[self.phase_index]
+        self.background = pygame.image.load(phase.img).convert()
+        self.background = pygame.transform.scale(self.background, self.window_size)
 
     def _start_phase(self, phase_index):
         phase = self.phases[phase_index]

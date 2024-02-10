@@ -11,13 +11,13 @@ class Phase:
 
 
 class Game:
+    _TOTAL_FADE_STEPS = 255
+    _TRANSITION_DURATION = 6
+    _FPS = 60
+
     def __init__(self):
         pygame.font.init()
         pygame.mixer.init()
-
-        self.window_size = (1280, 720)
-        self.screen = pygame.display.set_mode(self.window_size)
-        pygame.display.set_caption("Phase Music")
 
         self.phases = [
             Phase(
@@ -34,14 +34,20 @@ class Game:
                 "img/ai/mythos.webp",
             ),
         ]
+
+        # Window
+        self.window_size = (1280, 720)
+        self.screen = pygame.display.set_mode(self.window_size)
+        pygame.display.set_caption("phusic")
+
+        # Setup state
         self.phase_index = 0
         self.is_fading = False
         self.fade_step = 0
-        self.total_fade_steps = 255
-        self.transition_duration = 6
-        self.FPS = 60
-        self.frames_for_transition = self.transition_duration * self.FPS
-        self.fade_step_increment = self.total_fade_steps / float(
+        self.is_fullscreen = False
+
+        self.frames_for_transition = self._TRANSITION_DURATION * self._FPS
+        self.fade_step_increment = self._TOTAL_FADE_STEPS / float(
             self.frames_for_transition
         )
         self.next_background = None
@@ -57,11 +63,21 @@ class Game:
                     running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN and not self.is_fading:
                     self._next_phase()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_F11:
+                        self._toggle_fullscreen()
             self._draw()
-            clock.tick(self.FPS)
+            clock.tick(self._FPS)
 
         pygame.quit()
         sys.exit()
+
+    def _toggle_fullscreen(self):
+        self.is_fullscreen = not self.is_fullscreen
+        if self.is_fullscreen:
+            self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        else:
+            self.screen = pygame.display.set_mode(self.window_size)
 
     def _start_phase(self, phase_index):
         phase = self.phases[phase_index]
@@ -86,7 +102,7 @@ class Game:
         if self.is_fading:
             current_phase = self.phases[self.phase_index]
             next_phase = self.phases[(self.phase_index + 1) % len(self.phases)]
-            alpha = int(self.fade_step * (255 / self.total_fade_steps))
+            alpha = int(self.fade_step * (255 / self._TOTAL_FADE_STEPS))
             self.next_background.set_alpha(alpha)
             self.screen.blit(self.background, (0, 0))
             self.screen.blit(self.next_background, (0, 0))
@@ -94,7 +110,8 @@ class Game:
             next_phase.sound.set_volume(new_volume)
             current_phase.sound.set_volume(1.0 - new_volume)
             self.fade_step += self.fade_step_increment
-            if self.fade_step > self.total_fade_steps:
+
+            if self.fade_step > self._TOTAL_FADE_STEPS:
                 self.is_fading = False
                 self.phase_index = (self.phase_index + 1) % len(self.phases)
                 self.background = self.next_background

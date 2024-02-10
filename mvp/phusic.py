@@ -10,6 +10,13 @@ class Phase:
         self.sound = pygame.mixer.Sound(audio)
 
 
+class Sfx:
+    def __init__(self, key: int, audio: str) -> None:
+        self.key = key
+        self.audio = audio
+        self.sound = pygame.mixer.Sound(audio)
+
+
 class Game:
     _TOTAL_FADE_STEPS = 255
     _TRANSITION_DURATION = 6
@@ -20,7 +27,7 @@ class Game:
         pygame.font.init()
         pygame.mixer.init()
 
-        self.phases = [
+        self.phases: list[Phase] = [
             Phase(
                 "Action", "audio/action/249_Steampunk_Station.mp3", "img/ai/action.webp"
             ),
@@ -34,6 +41,11 @@ class Game:
                 "audio/mythos/227_Terror_in_the_Woods.mp3",
                 "img/ai/mythos.webp",
             ),
+        ]
+
+        self.sfx: list[Sfx] = [
+            Sfx(pygame.K_e, "audio/sfx/evil-laugh.mp3"),
+            Sfx(pygame.K_t, "audio/sfx/thunder.mp3"),
         ]
 
         # Window
@@ -62,11 +74,17 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                elif event.type == pygame.MOUSEBUTTONDOWN and not self.is_fading:
-                    self._next_phase()
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_F11:
                         self._toggle_fullscreen()
+
+                    if event.key == pygame.K_SPACE:
+                        self._next_phase()
+
+                    for sfx in self.sfx:
+                        if event.key == sfx.key:
+                            sfx.sound.play()
+
             self._draw()
             clock.tick(self._FPS)
 
@@ -94,6 +112,9 @@ class Game:
         self.background = pygame.transform.scale(self.background, self.window_size)
 
     def _next_phase(self):
+        if self.is_fading:
+            return
+
         self.is_fading = True
         self.fade_step = 0
         next_phase_index = (self.phase_index + 1) % len(self.phases)

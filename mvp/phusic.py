@@ -14,16 +14,25 @@ class Game:
     def __init__(self):
         pygame.font.init()
         pygame.mixer.init()
-        screen_size = 640
 
-        self.window_size = (screen_size, screen_size)
+        self.window_size = (1280, 720)
         self.screen = pygame.display.set_mode(self.window_size)
         pygame.display.set_caption("Phase Music")
 
         self.phases = [
-            Phase("Action", "audio/action.mp3", "img/action.png"),
-            Phase("Encounter", "audio/encounter.mp3", "img/encounter.png"),
-            Phase("Mythos", "audio/mythos.mp3", "img/mythos.png"),
+            Phase(
+                "Action", "audio/action/249_Steampunk_Station.mp3", "img/ai/action.webp"
+            ),
+            Phase(
+                "Encounter",
+                "audio/encounter/316_Goblin_Ambush.mp3",
+                "img/ai/encounter.webp",
+            ),
+            Phase(
+                "Mythos",
+                "audio/mythos/227_Terror_in_the_Woods.mp3",
+                "img/ai/mythos.webp",
+            ),
         ]
         self.phase_index = 0
         self.is_fading = False

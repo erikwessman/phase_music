@@ -56,7 +56,7 @@ class Game:
     def run(self):
         clock = pygame.time.Clock()
         running = True
-        self._start_phase(self.phase_index)
+        self._initial_phase(self.phase_index)
 
         while running:
             for event in pygame.event.get():
@@ -86,7 +86,7 @@ class Game:
         self.background = pygame.image.load(phase.img).convert()
         self.background = pygame.transform.scale(self.background, self.window_size)
 
-    def _start_phase(self, phase_index):
+    def _initial_phase(self, phase_index):
         phase = self.phases[phase_index]
         phase.sound.play(-1)
         phase.sound.set_volume(1.0)

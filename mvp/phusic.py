@@ -11,6 +11,8 @@ class Phase:
 
 
 class Game:
+    is_fading = False
+
     def __init__(self):
         pygame.font.init()
         pygame.mixer.init()
@@ -40,8 +42,11 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                elif event.type == pygame.MOUSEBUTTONDOWN:
+                elif event.type == pygame.MOUSEBUTTONDOWN and not self.is_fading:
+                    self.is_fading = True
+                    print("Fading!")
                     self._play_next_phase()
+                    self.is_fading = False
             self._draw()
 
         pygame.quit()

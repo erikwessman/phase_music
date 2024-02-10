@@ -11,8 +11,6 @@ class Phase:
 
 
 class Game:
-    is_fading = False
-
     def __init__(self):
         pygame.font.init()
         pygame.mixer.init()
@@ -22,70 +20,79 @@ class Game:
         self.screen = pygame.display.set_mode(self.window_size)
         pygame.display.set_caption("Phase Music")
 
-        # Music and Backgrounds
         self.phases = [
             Phase("Action", "audio/action.mp3", "img/action.png"),
             Phase("Encounter", "audio/encounter.mp3", "img/encounter.png"),
             Phase("Mythos", "audio/mythos.mp3", "img/mythos.png"),
         ]
-        self.current_phase_index = 0
+        self.phase_index = 0
+        self.is_fading = False
+        self.fade_step = 0
+        self.total_fade_steps = 255
+        self.transition_duration = 6
+        self.FPS = 60
+        self.frames_for_transition = self.transition_duration * self.FPS
+        self.fade_step_increment = self.total_fade_steps / float(
+            self.frames_for_transition
+        )
+        self.next_background = None
 
     def run(self):
+        clock = pygame.time.Clock()
         running = True
-        phase = self.phases[self.current_phase_index]
-        phase.sound.play(-1)
-        phase.sound.set_volume(1.0)
-        self.background = pygame.image.load(phase.img).convert()
-        self.background = pygame.transform.scale(self.background, self.window_size)
+        self._start_phase(self.phase_index)
 
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN and not self.is_fading:
-                    self.is_fading = True
-                    print("Fading!")
-                    self._play_next_phase()
-                    self.is_fading = False
+                    self._next_phase()
             self._draw()
+            clock.tick(self.FPS)
 
         pygame.quit()
         sys.exit()
 
-    def _play_next_phase(self):
-        current_phase = self.phases[self.current_phase_index]
-        next_phase_index = (self.current_phase_index + 1) % len(self.phases)
+    def _start_phase(self, phase_index):
+        phase = self.phases[phase_index]
+        phase.sound.play(-1)
+        phase.sound.set_volume(1.0)
+        self.background = pygame.image.load(phase.img).convert()
+        self.background = pygame.transform.scale(self.background, self.window_size)
+
+    def _next_phase(self):
+        self.is_fading = True
+        self.fade_step = 0
+        next_phase_index = (self.phase_index + 1) % len(self.phases)
         next_phase = self.phases[next_phase_index]
         next_phase.sound.play(-1)
         next_phase.sound.set_volume(0.0)
+        self.next_background = pygame.image.load(next_phase.img).convert()
+        self.next_background = pygame.transform.scale(
+            self.next_background, self.window_size
+        )
 
-        # Capture current screen
-        current_screen = pygame.Surface(self.window_size).convert()
-        current_screen.blit(self.screen, (0, 0))
-
-        # Load next background
-        next_background = pygame.image.load(next_phase.img).convert()
-        next_background = pygame.transform.scale(next_background, self.window_size)
-
-        total_steps = 255
-        for step in range(total_steps + 1):
-            alpha = step * (255 // total_steps)
-            self.screen.blit(current_screen, (0, 0))
-            next_background.set_alpha(alpha)
-            self.screen.blit(next_background, (0, 0))
-            pygame.display.flip()
-            pygame.time.delay(100)
-
+    def _draw(self):
+        if self.is_fading:
+            current_phase = self.phases[self.phase_index]
+            next_phase = self.phases[(self.phase_index + 1) % len(self.phases)]
+            alpha = int(self.fade_step * (255 / self.total_fade_steps))
+            self.next_background.set_alpha(alpha)
+            self.screen.blit(self.background, (0, 0))
+            self.screen.blit(self.next_background, (0, 0))
             new_volume = alpha / 255.0
             next_phase.sound.set_volume(new_volume)
             current_phase.sound.set_volume(1.0 - new_volume)
+            self.fade_step += self.fade_step_increment
+            if self.fade_step > self.total_fade_steps:
+                self.is_fading = False
+                self.phase_index = (self.phase_index + 1) % len(self.phases)
+                self.background = self.next_background
+                current_phase.sound.stop()
+        else:
+            self.screen.blit(self.background, (0, 0))
 
-        current_phase.sound.stop()
-        self.current_phase_index = next_phase_index
-        self.background = next_background
-
-    def _draw(self):
-        self.screen.blit(self.background, (0, 0))
         pygame.display.flip()
 
 

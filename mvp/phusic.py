@@ -1,4 +1,6 @@
+import json
 import pygame
+import argparse
 import sys
 
 
@@ -23,29 +25,14 @@ class Game:
     FPS = 60
     WINDOWED_SIZE = (1280, 720)
 
-    def __init__(self):
+    def __init__(self, config: dict):
         pygame.font.init()
         pygame.mixer.init()
-
-        self.phases: list[Phase] = [
-            Phase(
-                "Action", "audio/action/249_Steampunk_Station.mp3", "img/ai/action.webp"
-            ),
-            Phase(
-                "Encounter",
-                "audio/encounter/316_Goblin_Ambush.mp3",
-                "img/ai/encounter.webp",
-            ),
-            Phase(
-                "Mythos",
-                "audio/mythos/227_Terror_in_the_Woods.mp3",
-                "img/ai/mythos.webp",
-            ),
-        ]
+        self.phases = self._config_to_phases(config)
 
         self.sfx: list[Sfx] = [
-            Sfx(pygame.K_e, "audio/sfx/evil-laugh.mp3"),
-            Sfx(pygame.K_t, "audio/sfx/thunder.mp3"),
+            Sfx(pygame.K_e, "assets/sfx/evil-laugh.mp3"),
+            Sfx(pygame.K_t, "assets/sfx/thunder.mp3"),
         ]
 
         # Window
@@ -90,6 +77,16 @@ class Game:
 
         pygame.quit()
         sys.exit()
+
+    def _config_to_phases(self, config: dict) -> list[Phase]:
+        phases = []
+
+        print(config)
+
+        for phase in config["phases"]:
+            phases.append(Phase(phase["name"], phase["audio"], phase["img"]))
+
+        return phases
 
     def _toggle_fullscreen(self):
         self.is_fullscreen = not self.is_fullscreen
@@ -151,5 +148,16 @@ class Game:
 
 
 if __name__ == "__main__":
-    game = Game()
+    parser = argparse.ArgumentParser(
+        description="Start the game with a configuration file."
+    )
+    parser.add_argument(
+        "--config", type=str, help="Path to configuration file", required=True
+    )
+    args = parser.parse_args()
+
+    with open(args.config, "r") as file:
+        config = json.load(file)
+
+    game = Game(config)
     game.run()

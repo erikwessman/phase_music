@@ -1,0 +1,19 @@
+{
+    "phases": [
+        {
+            "name": "Action",
+            "img": "assets/eldritch_horror/action.webp",
+            "audio": "assets/eldritch_horror/action.mp3"
+        },
+        {
+            "name": "Encounter",
+            "img": "assets/eldritch_horror/encounter.webp",
+            "audio": "assets/eldritch_horror/encounter.mp3"
+        },
+        {
+            "name": "Mythos",
+            "img": "assets/eldritch_horror/mythos.webp",
+            "audio": "assets/eldritch_horror/mythos.mp3"
+        }
+    ]
+}

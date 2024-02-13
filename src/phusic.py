@@ -11,11 +11,9 @@ class Phase:
         self.name = name
         self.sound = None
         self.background = None
-
-        self._audio = audio
-        self._imgs = imgs
         self._iteration = 0
 
+        self._initialize_assets(audio, imgs)
         self._update_phase()
 
     def next_iteration(self):
@@ -23,15 +21,23 @@ class Phase:
         self._update_phase()
 
     def prev_iteration(self):
-        self._iteration = max(self._iteration - 1, 0)
+        self._iteration -= 1
         self._update_phase()
 
-    def _update_phase(self):
-        audio_path = self._audio[self._iteration % len(self._audio)]
-        self.sound = pygame.mixer.Sound(audio_path)
+    def _initialize_assets(self, audio: List[str], imgs: List[str]):
+        print("Loading assets...")
 
-        img_path = self._imgs[self._iteration % len(self._imgs)]
-        self.background = pygame.image.load(img_path).convert()
+        self._audio = []
+        for a in audio:
+            self._audio.append(pygame.mixer.Sound(a))
+
+        self._imgs = []
+        for i in imgs:
+            self._imgs.append(pygame.image.load(i))
+
+    def _update_phase(self):
+        self.sound = self._audio[self._iteration % len(self._audio)]
+        self.background = self._imgs[self._iteration % len(self._imgs)]
 
 
 class Sfx:
@@ -188,8 +194,8 @@ class Game:
             if self.fade_step > self.TOTAL_FADE_STEPS:
                 self.is_fading = False
                 self.curr_phase_index = self.next_phase_index
-                curr_phase.next_iteration()
                 curr_phase.sound.stop()
+                curr_phase.next_iteration()
         else:
             curr_phase = self.phases[self.curr_phase_index]
             self.screen.blit(curr_phase.background, (0, 0))

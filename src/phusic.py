@@ -25,7 +25,7 @@ class Phase:
         self._update_phase()
 
     def _initialize_assets(self, audio: List[str], imgs: List[str]):
-        print("Loading assets...")
+        print(f"Loading {self.name} assets ...")
 
         self._audio = []
         for a in audio:
@@ -52,6 +52,8 @@ class Game:
     TRANSITION_DURATION = 6
     FPS = 60
     WINDOWED_SIZE = (1280, 720)
+    FONT_SIZE = 24
+    FONT_COLOR = (255, 255, 255)
 
     def __init__(self, config: dict):
         pygame.font.init()
@@ -65,6 +67,7 @@ class Game:
         # Window
         self.window_size = self.WINDOWED_SIZE
         self.screen = pygame.display.set_mode(self.WINDOWED_SIZE)
+        self.font = pygame.font.Font(None, self.FONT_SIZE)
         pygame.display.set_caption("phusic")
 
         self.phases = self._get_phases(config)
@@ -174,8 +177,9 @@ class Game:
         )
 
     def _draw(self):
+        curr_phase = self.phases[self.curr_phase_index]
+
         if self.is_fading:
-            curr_phase = self.phases[self.curr_phase_index]
             next_phase = self.phases[self.next_phase_index]
 
             # Handle next background
@@ -197,8 +201,12 @@ class Game:
                 curr_phase.sound.stop()
                 curr_phase.next_iteration()
         else:
-            curr_phase = self.phases[self.curr_phase_index]
             self.screen.blit(curr_phase.background, (0, 0))
+
+        # Draw phase name
+        phase_name = curr_phase.name
+        text_position = (10, self.window_size[1] - self.FONT_SIZE - 10)
+        self._draw_text(phase_name, text_position)
 
         pygame.display.flip()
 
@@ -209,6 +217,10 @@ class Game:
             if os.path.isfile(full_path):
                 full_paths.append(full_path)
         return full_paths
+
+    def _draw_text(self, text, position):
+        text_surface = self.font.render(text, True, self.FONT_COLOR)
+        self.screen.blit(text_surface, position)
 
 
 if __name__ == "__main__":

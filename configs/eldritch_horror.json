@@ -1,0 +1,35 @@
+{
+    "phases": [
+        {
+            "name": "Action",
+            "imgs": "assets/eldritch_horror/action/images",
+            "audio": "assets/eldritch_horror/action/audio"
+        },
+        {
+            "name": "Encounter",
+            "imgs": "assets/eldritch_horror/encounter/images",
+            "audio": "assets/eldritch_horror/encounter/audio"
+        },
+        {
+            "name": "Mythos",
+            "imgs": "assets/eldritch_horror/mythos/images",
+            "audio": "assets/eldritch_horror/mythos/audio"
+        }
+    ],
+    "endings": [
+        {
+            "name": "Victory",
+            "imgs": "assets/eldritch_horror/victory/images",
+            "audio": "assets/eldritch_horror/victory/audio"
+        },
+        {
+            "name": "Defeat",
+            "imgs": "assets/eldritch_horror/defeat/images",
+            "audio": "assets/eldritch_horror/defeat/audio"
+        }
+    ],
+    "sfx":
+    {
+        "1": "assets/eldritch_horror/sfx/laugh.mp3"
+    }
+}

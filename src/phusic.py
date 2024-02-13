@@ -19,7 +19,7 @@ class Phase:
         self._update_phase()
 
     def next_iteration(self):
-        self._iteration = min(self._iteration + 1, len(self._audio))
+        self._iteration += 1
         self._update_phase()
 
     def prev_iteration(self):
@@ -27,10 +27,10 @@ class Phase:
         self._update_phase()
 
     def _update_phase(self):
-        audio_path = self._audio[self._iteration]
+        audio_path = self._audio[self._iteration % len(self._audio)]
         self.sound = pygame.mixer.Sound(audio_path)
 
-        img_path = self._imgs[self._iteration]
+        img_path = self._imgs[self._iteration % len(self._imgs)]
         self.background = pygame.image.load(img_path).convert()
 
 

@@ -25,7 +25,7 @@ class Phase:
         self._update_phase()
 
     def _initialize_assets(self, audio: List[str], imgs: List[str]):
-        print(f"Loading {self.name} assets ...")
+        print(f"Loading {self.name} assets...")
 
         self._audio = []
         for a in audio:
@@ -59,11 +59,6 @@ class Game:
         pygame.font.init()
         pygame.mixer.init()
 
-        self.sfx: list[Sfx] = [
-            Sfx(pygame.K_e, "assets/sfx/evil-laugh.mp3"),
-            Sfx(pygame.K_t, "assets/sfx/thunder.mp3"),
-        ]
-
         # Window
         self.window_size = self.WINDOWED_SIZE
         self.screen = pygame.display.set_mode(self.WINDOWED_SIZE)
@@ -72,6 +67,7 @@ class Game:
 
         self.phases = self._get_phases(config)
         self.endings = self._get_endings(config)
+        self.sfx = self._get_sfx(config)
 
         # Setup state
         self.fade_step = 0
@@ -138,6 +134,16 @@ class Game:
             endings.append(Phase(phase["name"], audio, imgs))
 
         return endings
+
+    def _get_sfx(self, config: dict) -> dict:
+        sfxs = []
+        for key, sfx_path in config["sfx"].items():
+            if not os.path.exists(sfx_path):
+                print(f"Sfx {sfx_path} does not exist")
+                continue
+
+            sfxs.append(Sfx(getattr(pygame, key), sfx_path))
+        return sfxs
 
     def _toggle_fullscreen(self):
         self.is_fullscreen = not self.is_fullscreen

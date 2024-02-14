@@ -28,8 +28,9 @@
             "audio": "assets/eldritch_horror/defeat/audio"
         }
     ],
-    "sfx":
-    {
-        "1": "assets/eldritch_horror/sfx/laugh.mp3"
+    "sfx": {
+        "K_1": "assets/sfx/evil-laugh.mp3",
+        "K_2": "assets/sfx/thunder.mp3",
+        "K_3": "assets/sfx/morning.mp3"
     }
 }

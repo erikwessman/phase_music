@@ -74,8 +74,9 @@ class Game:
         self.is_fading = False
         self.is_fullscreen = False
 
-        self.curr_phase_index = 0
-        self.next_phase_index = 0
+        self.phase_index = 0
+        self.curr_phase = None
+        self.next_phase = None
 
         self.frames_for_transition = self.TRANSITION_DURATION * self.FPS
         self.fade_step_increment = self.TOTAL_FADE_STEPS / float(
@@ -85,7 +86,7 @@ class Game:
     def run(self):
         clock = pygame.time.Clock()
         running = True
-        self._initial_phase(self.curr_phase_index)
+        self._initial_phase(0)
 
         while running:
             for event in pygame.event.get():
@@ -96,14 +97,24 @@ class Game:
                         self._toggle_fullscreen()
 
                     if event.key == pygame.K_LEFT:
-                        next_phase_index = (
-                            self.curr_phase_index - 1) % len(self.phases)
-                        self._change_phase(next_phase_index)
+                        self.phase_index = (
+                            self.phase_index - 1) % len(self.phases)
+                        next_phase = self.phases[self.phase_index]
+                        self._change_phase(next_phase)
 
                     if event.key == pygame.K_RIGHT or event.key == pygame.K_SPACE:
-                        next_phase_index = (
-                            self.curr_phase_index + 1) % len(self.phases)
-                        self._change_phase(next_phase_index)
+                        self.phase_index = (
+                            self.phase_index + 1) % len(self.phases)
+                        next_phase = self.phases[self.phase_index]
+                        self._change_phase(next_phase)
+
+                    if event.key == pygame.K_v:
+                        victory_phase = self.endings[0]
+                        self._change_phase(victory_phase)
+
+                    if event.key == pygame.K_d:
+                        defeat_phase = self.endings[1]
+                        self._change_phase(defeat_phase)
 
                     for sfx in self.sfx:
                         if event.key == sfx.key:
@@ -160,57 +171,52 @@ class Game:
 
     def _initial_phase(self, phase_index):
         phase = self.phases[phase_index]
+        self.curr_phase = phase
+
         phase.sound.set_volume(1.0)
         phase.sound.play(-1)
         phase.background = pygame.transform.scale(
             phase.background, self.window_size)
 
-    def _change_phase(self, next_phase_index: int):
+    def _change_phase(self, next_phase: Phase):
         if self.is_fading:
             return
 
+        self.next_phase = next_phase
         self.is_fading = True
         self.fade_step = 0
 
-        self.next_phase_index = next_phase_index
-
-        phase = self.phases[next_phase_index]
-
-        phase.sound.set_volume(0.0)
-        phase.sound.play(-1)
-        phase.background = pygame.transform.scale(
-            phase.background, self.window_size
+        next_phase.sound.set_volume(0.0)
+        next_phase.sound.play(-1)
+        next_phase.background = pygame.transform.scale(
+            next_phase.background, self.window_size
         )
 
     def _draw(self):
-        curr_phase = self.phases[self.curr_phase_index]
-
         if self.is_fading:
-            next_phase = self.phases[self.next_phase_index]
-
             # Handle next background
             alpha = int(self.fade_step * (255 / self.TOTAL_FADE_STEPS))
-            next_phase.background.set_alpha(alpha)
-            self.screen.blit(curr_phase.background, (0, 0))
-            self.screen.blit(next_phase.background, (0, 0))
+            self.next_phase.background.set_alpha(alpha)
+            self.screen.blit(self.curr_phase.background, (0, 0))
+            self.screen.blit(self.next_phase.background, (0, 0))
 
             # Handle next sound
             new_volume = alpha / 255.0
-            next_phase.sound.set_volume(new_volume)
-            curr_phase.sound.set_volume(1.0 - new_volume)
+            self.next_phase.sound.set_volume(new_volume)
+            self.curr_phase.sound.set_volume(1.0 - new_volume)
 
             self.fade_step += self.fade_step_increment
 
             if self.fade_step > self.TOTAL_FADE_STEPS:
                 self.is_fading = False
-                self.curr_phase_index = self.next_phase_index
-                curr_phase.sound.stop()
-                curr_phase.next_iteration()
+                self.curr_phase.sound.stop()
+                self.curr_phase.next_iteration()
+                self.curr_phase = self.next_phase
         else:
-            self.screen.blit(curr_phase.background, (0, 0))
+            self.screen.blit(self.curr_phase.background, (0, 0))
 
         # Draw phase name
-        phase_name = curr_phase.name
+        phase_name = self.curr_phase.name
         text_position = (10, self.window_size[1] - self.FONT_SIZE - 10)
         self._draw_text(phase_name, text_position)
 
@@ -222,7 +228,7 @@ class Game:
             full_path = os.path.join(path, entry)
             if os.path.isfile(full_path):
                 full_paths.append(full_path)
-        return full_paths
+        return sorted(full_paths)
 
     def _draw_text(self, text, position):
         text_surface = self.font.render(text, True, self.FONT_COLOR)

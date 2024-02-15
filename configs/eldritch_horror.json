@@ -18,19 +18,30 @@
     ],
     "endings": [
         {
+            "key": "K_v",
             "name": "Victory",
-            "imgs": "assets/eldritch_horror/victory/images",
+            "img": "assets/eldritch_horror/victory/images",
             "audio": "assets/eldritch_horror/victory/audio"
         },
         {
+            "key": "K_d",
             "name": "Defeat",
-            "imgs": "assets/eldritch_horror/defeat/images",
+            "img": "assets/eldritch_horror/defeat/images",
             "audio": "assets/eldritch_horror/defeat/audio"
         }
     ],
-    "sfx": {
-        "K_1": "assets/sfx/evil-laugh.mp3",
-        "K_2": "assets/sfx/thunder.mp3",
-        "K_3": "assets/sfx/morning.mp3"
-    }
+    "sfx": [
+        {
+            "key": "K_1",
+            "audio": "assets/sfx/evil-laugh.mp3"
+        },
+        {
+            "key": "K_2",
+            "audio": "assets/sfx/thunder.mp3"
+        },
+        {
+            "key": "K_3",
+            "audio": "assets/sfx/morning.mp3"
+        }
+    ]
 }

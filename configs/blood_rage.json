@@ -1,0 +1,56 @@
+{
+    "phases": [
+        {
+            "name": "God's Gift",
+            "imgs": "assets/blood_rage/gods_gift/images",
+            "audio": "assets/blood_rage/gods_gift/audio"
+        },
+        {
+            "name": "Action",
+            "imgs": "assets/blood_rage/gods_gift/images",
+            "audio": "assets/blood_rage/gods_gift/audio"
+        },
+        {
+            "name": "Quest",
+            "imgs": "assets/blood_rage/gods_gift/images",
+            "audio": "assets/blood_rage/gods_gift/audio"
+        },
+        {
+            "name": "Ragnarök",
+            "imgs": "assets/blood_rage/gods_gift/images",
+            "audio": "assets/blood_rage/gods_gift/audio"
+        },
+        {
+            "name": "Release Valhalla",
+            "imgs": "assets/blood_rage/gods_gift/images",
+            "audio": "assets/blood_rage/gods_gift/audio"
+        }
+    ],
+    "endings": [
+        {
+            "key": "K_r",
+            "name": "Raven",
+            "img": "assets/blood_rage/raven/images",
+            "audio": "assets/blood_rage/raven/audio"
+        },
+        {
+            "key": "K_b",
+            "name": "Bear",
+            "img": "assets/blood_rage/bear/images",
+            "audio": "assets/blood_rage/bear/audio"
+        },
+        {
+            "key": "K_s",
+            "name": "Serpent",
+            "img": "assets/blood_rage/serpent/images",
+            "audio": "assets/blood_rage/serpent/audio"
+        },
+        {
+            "key": "K_w",
+            "name": "Wolf",
+            "img": "assets/blood_rage/wolf/images",
+            "audio": "assets/blood_rage/wolf/audio"
+        }
+    ],
+    "sfx": []
+}

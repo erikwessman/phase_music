@@ -14,7 +14,7 @@ import util
 
 class Game:
     TOTAL_FADE_STEPS = 255
-    TRANSITION_DURATION = 2
+    TRANSITION_DURATION = 5
     FPS = 60
     WINDOWED_SIZE = (1280, 720)
     FONT_SIZE = 36
@@ -40,7 +40,8 @@ class Game:
         self.is_fading = False
         self.is_fullscreen = False
 
-        self.curr_phase = util.create_linked_list(self.phases).head
+        self.linked_list = util.create_linked_list(self.phases)
+        self.curr_phase = self.linked_list.head
         self.next_phase = None
 
         self.frames_for_transition = self.TRANSITION_DURATION * self.FPS
@@ -67,12 +68,14 @@ class Game:
                     if event.key == pygame.K_RIGHT or event.key == pygame.K_SPACE:
                         self._change_phase(self.curr_phase.next)
 
-                    if (
-                        event.key == pygame.K_c
-                        and pygame.key.get_mods() & pygame.KMOD_CTRL
-                    ):
-                        print("Shutting down")
-                        exit(0)
+                    if pygame.key.get_mods() & pygame.KMOD_CTRL:
+                        if event.key == pygame.K_LEFT:
+                            self._set_phase(self.curr_phase.prev)
+                        elif event.key == pygame.K_RIGHT:
+                            self._set_phase(self.curr_phase.next)
+                        elif event.key == pygame.K_c:
+                            print("Shutting down")
+                            exit(0)
 
                     for ending in self.endings:
                         if event.key == ending.key:
@@ -151,8 +154,10 @@ class Game:
 
         # Scale background
         self.window_size = self.screen.get_size()
-        background = self.curr_phase.background
-        background = pygame.transform.scale(background, self.window_size)
+        self.curr_phase.background = self.curr_phase.background.convert()
+        self.curr_phase.background = pygame.transform.scale(
+            self.curr_phase.background, self.window_size
+        )
 
     def _initial_phase(self):
         self.curr_phase.sound.set_volume(1.0)
@@ -165,6 +170,14 @@ class Game:
         if self.is_fading:
             return
 
+        if not next_phase:
+            if not self.linked_list.head:
+                print("Linked list is empty")
+                exit(1)
+
+            print("No next phase, reverting back to start...")
+            next_phase = self.linked_list.head
+
         self.is_fading = True
         self.fade_step = 0
         self.next_phase = next_phase
@@ -174,6 +187,17 @@ class Game:
         next_phase.background = pygame.transform.scale(
             next_phase.background, self.window_size
         )
+
+    def _set_phase(self, phase: Phase):
+        """Update the current phase without fading"""
+        self.curr_phase.sound.stop()
+        self.is_fading = False
+        self.fade_step = 0
+
+        phase.sound.set_volume(1.0)
+        phase.sound.play(-1)
+        phase.background = pygame.transform.scale(phase.background, self.window_size)
+        self.curr_phase = phase
 
     def _draw(self):
         curr_phase = self.curr_phase
@@ -200,9 +224,12 @@ class Game:
         else:
             self.screen.blit(curr_phase.background, (0, 0))
 
-        # Draw phase name
-        text_position = (10 + self.FONT_SIZE, self.window_size[1] - self.FONT_SIZE - 10)
-        self._draw_text(self.curr_phase.name, text_position)
+            # Draw phase name
+            text_position = (
+                10 + self.FONT_SIZE,
+                self.window_size[1] - self.FONT_SIZE - 10,
+            )
+            self._draw_text(self.curr_phase.name, text_position)
 
         pygame.display.flip()
 

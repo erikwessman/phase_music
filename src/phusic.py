@@ -225,17 +225,51 @@ class Game:
             self.screen.blit(curr_phase.background, (0, 0))
 
             # Draw phase name
-            text_position = (
-                10 + self.FONT_SIZE,
-                self.window_size[1] - self.FONT_SIZE - 10,
+            phase_position = self._fit_text_inside_window(
+                self.curr_phase.name, (0, self.window_size[1])
             )
-            self._draw_text(self.curr_phase.name, text_position)
+            self._draw_text(self.curr_phase.name, phase_position)
+
+        # Draw current time
+        time_position = self._fit_text_inside_window(
+            self.curr_phase.name, self.window_size
+        )
+        curr_time = util.get_local_time()
+        self._draw_text(curr_time, time_position)
 
         pygame.display.flip()
 
     def _draw_text(self, text, position):
         text_surface = self.font.render(text, True, self.FONT_COLOR)
         self.screen.blit(text_surface, position)
+
+    def _fit_text_inside_window(self, text: str, position, padding: int = 10):
+        """
+        Adjusts the text position to ensure it fits within the screen.
+        """
+        # Render the text to get its size
+        text_surface = self.font.render(text, True, (255, 255, 255))
+        text_width, text_height = text_surface.get_size()
+
+        window_width, window_height = self.window_size
+
+        # Adjust X position
+        if position[0] < padding:
+            x_position = padding
+        elif position[0] + text_width > window_width - padding:
+            x_position = window_width - text_width - padding
+        else:
+            x_position = position[0]
+
+        # Adjust Y position
+        if position[1] < padding:
+            y_position = padding
+        elif position[1] + text_height > window_height - padding:
+            y_position = window_height - text_height - padding
+        else:
+            y_position = position[1]
+
+        return x_position, y_position
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from typing import List
 
 from linked_list import CircularDoublyLinkedList
@@ -21,3 +22,9 @@ def create_linked_list(phases: List[Phase]) -> CircularDoublyLinkedList:
         linked_list.append(phase)
 
     return linked_list
+
+
+def get_local_time():
+    now = datetime.now()
+    time_as_string = now.strftime("%H:%M:%S")
+    return time_as_string

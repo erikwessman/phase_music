@@ -225,51 +225,30 @@ class Game:
             self.screen.blit(curr_phase.background, (0, 0))
 
             # Draw phase name
-            phase_position = self._fit_text_inside_window(
-                self.curr_phase.name, (0, self.window_size[1])
-            )
-            self._draw_text(self.curr_phase.name, phase_position)
+            phase_position = (10, self.window_size[1] - 10 - self.FONT_SIZE * 2)
+            self._draw_text_with_outline(self.curr_phase.name, phase_position)
 
         # Draw current time
-        time_position = self._fit_text_inside_window(
-            self.curr_phase.name, self.window_size
-        )
+        time_position = (10, self.window_size[1] - 10 - self.FONT_SIZE)
         curr_time = util.get_local_time()
-        self._draw_text(curr_time, time_position)
+        self._draw_text_with_outline(curr_time, time_position)
 
         pygame.display.flip()
 
-    def _draw_text(self, text, position):
+    def _draw_text_with_outline(self, text, position, outline_width: int = 2):
+        x, y = position
+
+        for dx, dy in [
+            (ow, oh)
+            for ow in range(-outline_width, outline_width + 1)
+            for oh in range(-outline_width, outline_width + 1)
+            if ow != 0 or oh != 0
+        ]:
+            text_surface = self.font.render(text, True, (0, 0, 0))
+            self.screen.blit(text_surface, (x + dx, y + dy))
+
         text_surface = self.font.render(text, True, self.FONT_COLOR)
         self.screen.blit(text_surface, position)
-
-    def _fit_text_inside_window(self, text: str, position, padding: int = 10):
-        """
-        Adjusts the text position to ensure it fits within the screen.
-        """
-        # Render the text to get its size
-        text_surface = self.font.render(text, True, (255, 255, 255))
-        text_width, text_height = text_surface.get_size()
-
-        window_width, window_height = self.window_size
-
-        # Adjust X position
-        if position[0] < padding:
-            x_position = padding
-        elif position[0] + text_width > window_width - padding:
-            x_position = window_width - text_width - padding
-        else:
-            x_position = position[0]
-
-        # Adjust Y position
-        if position[1] < padding:
-            y_position = padding
-        elif position[1] + text_height > window_height - padding:
-            y_position = window_height - text_height - padding
-        else:
-            y_position = position[1]
-
-        return x_position, y_position
 
 
 if __name__ == "__main__":

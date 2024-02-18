@@ -102,17 +102,14 @@ class Game:
             audio_paths = util.get_files_from_path(phase["audio"])
             img_paths = util.get_files_from_path(phase["imgs"])
 
-            shorter_list = (
-                audio_paths if len(audio_paths) < len(img_paths) else img_paths
-            )
-
-            for audio, img, in zip_longest(
-                audio_paths, img_paths, fillvalue=random.choice(shorter_list)
-            ):
+            for img in img_paths:
+                # Grab images sequentially, but grab audio randomly
+                audio = random.choice(audio_paths)
                 phase_instances.append(Phase(phase["name"], audio, img))
 
             phases.append(phase_instances)
 
+        # If there are more of one type of phase than the others, loop back
         ordered_phases = []
         max_length = max(len(p) for p in phases)
 
@@ -225,12 +222,15 @@ class Game:
             self.screen.blit(curr_phase.background, (0, 0))
 
             # Draw phase name
-            phase_position = (10, self.window_size[1] - 10 - self.FONT_SIZE * 2)
+            phase_position = (20, self.window_size[1] - 10 - self.FONT_SIZE)
             self._draw_text_with_outline(self.curr_phase.name, phase_position)
 
         # Draw current time
-        time_position = (10, self.window_size[1] - 10 - self.FONT_SIZE)
         curr_time = util.get_local_time()
+        time_position = (
+            self.window_size[0] - self.FONT_SIZE - 75,
+            self.window_size[1] - 10 - self.FONT_SIZE,
+        )
         self._draw_text_with_outline(curr_time, time_position)
 
         pygame.display.flip()

@@ -42,6 +42,10 @@
         {
             "key": "K_3",
             "audio": "assets/sfx/morning.mp3"
+        },
+        {
+            "key": "K_4",
+            "audio": "assets/sfx/power_up.mp3"
         }
     ]
 }

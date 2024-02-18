@@ -2,20 +2,18 @@
 
 *Phase* in and out of different music depending on the phase... Get it?
 
-## Assets
+## Asset sources
 
 Music: https://tabletopaudio.com/
 
 Sfx: https://pixabay.com/
 
-## Controls
+## 📖 Instructions
 
-Next phase: Right arrow or Space
+Keyboard shortcuts:
 
-Previous phase: Left arrow
-
-Fullscreen: f or F11
-
-Stop: Ctrl-c
-
-Change phase without waiting for fade: Ctrl + Left/Right arrow
+- **Next Phase:** ➡️ Right Arrow or ⌨️ Space
+- **Previous Phase:** ⬅️ Left Arrow
+- **Fullscreen Mode:** 🖥 F or F11
+- **Stop/Exit:** 🛑 Ctrl-C
+- **Instant Phase Change (No Fade):** ⚡ Ctrl + Left/Right Arrow

@@ -7,23 +7,23 @@
         },
         {
             "name": "Action",
-            "imgs": "assets/blood_rage/gods_gift/images",
-            "audio": "assets/blood_rage/gods_gift/audio"
+            "imgs": "assets/blood_rage/action/images",
+            "audio": "assets/blood_rage/action/audio"
         },
         {
             "name": "Quest",
-            "imgs": "assets/blood_rage/gods_gift/images",
-            "audio": "assets/blood_rage/gods_gift/audio"
+            "imgs": "assets/blood_rage/quest/images",
+            "audio": "assets/blood_rage/questaudio"
         },
         {
             "name": "Ragnarök",
-            "imgs": "assets/blood_rage/gods_gift/images",
-            "audio": "assets/blood_rage/gods_gift/audio"
+            "imgs": "assets/blood_rage/ragnarok/images",
+            "audio": "assets/blood_rage/ragnarok/audio"
         },
         {
             "name": "Release Valhalla",
-            "imgs": "assets/blood_rage/gods_gift/images",
-            "audio": "assets/blood_rage/gods_gift/audio"
+            "imgs": "assets/blood_rage/release_valhalla/images",
+            "audio": "assets/blood_rage/release_valhalla/audio"
         }
     ],
     "endings": [
@@ -52,5 +52,22 @@
             "audio": "assets/blood_rage/wolf/audio"
         }
     ],
-    "sfx": []
+    "sfx": [
+        {
+            "key": "K_1",
+            "audio": "assets/sfx/evil-laugh.mp3"
+        },
+        {
+            "key": "K_2",
+            "audio": "assets/sfx/thunder.mp3"
+        },
+        {
+            "key": "K_3",
+            "audio": "assets/sfx/morning.mp3"
+        },
+        {
+            "key": "K_4",
+            "audio": "assets/sfx/power_up.mp3"
+        }
+    ]
 }

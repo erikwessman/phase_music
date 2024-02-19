@@ -13,7 +13,7 @@
         {
             "name": "Quest",
             "imgs": "assets/blood_rage/quest/images",
-            "audio": "assets/blood_rage/questaudio"
+            "audio": "assets/blood_rage/quest/audio"
         },
         {
             "name": "Ragnarök",

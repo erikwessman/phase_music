@@ -30,8 +30,6 @@ class Game:
         self.font = pygame.font.Font(None, self.FONT_SIZE)
         pygame.display.set_caption("phusic")
 
-        self._draw_loading_screen()
-
         # Load stuff
         self.phases = self._get_phases(config)
         self.endings = self._get_endings(config)
@@ -94,11 +92,12 @@ class Game:
         sys.exit()
 
     def _get_phases(self, config: dict) -> list[Phase]:
-        print("Loading phase assets...")
+        self._draw_loading_screen("Loading phase assets...", 0)
 
         phases = []
+        total_phases = len(config["phases"])
 
-        for phase in config["phases"]:
+        for i, phase in enumerate(config["phases"]):
             phase_instances = []
 
             audio_paths = util.get_files_from_path(phase["audio"])
@@ -110,6 +109,9 @@ class Game:
                 phase_instances.append(Phase(phase["name"], audio, img))
 
             phases.append(phase_instances)
+
+            progress = (i + 1) / total_phases
+            self._draw_loading_screen("Loading phase assets...", progress)
 
         # If there are more of one type of phase than the others, loop back
         ordered_phases = []
@@ -123,24 +125,34 @@ class Game:
         return ordered_phases
 
     def _get_endings(self, config: dict) -> List[Ending]:
-        print("Loading ending assets...")
+        self._draw_loading_screen("Loading ending assets...", 0)
 
         endings = []
+        total_endings = len(config["endings"])
 
-        for ending in config["endings"]:
+        for i, ending in enumerate(config["endings"]):
             audio = random.choice(util.get_files_from_path(ending["audio"]))
             imgs = random.choice(util.get_files_from_path(ending["img"]))
             endings.append(
                 Ending(getattr(pygame, ending["key"]), ending["name"], audio, imgs)
             )
 
+            progress = (i + 1) / total_endings
+            self._draw_loading_screen("Loading ending assets...", progress)
+
         return endings
 
     def _get_sfx(self, config: dict) -> List[Sfx]:
-        sfxs = []
+        self._draw_loading_screen("Loading SFX assets...", 0)
 
-        for sfx in config["sfx"]:
+        sfxs = []
+        total_sfxs = len(config["sfx"])
+
+        for i, sfx in enumerate(config["sfx"]):
             sfxs.append(Sfx(getattr(pygame, sfx["key"]), sfx["audio"]))
+
+            progress = (i + 1) / total_sfxs
+            self._draw_loading_screen("Loading SFX assets...", progress)
 
         return sfxs
 
@@ -252,16 +264,38 @@ class Game:
         text_surface = self.font.render(text, True, self.FONT_COLOR)
         self.screen.blit(text_surface, position)
 
-    def _draw_loading_screen(self):
+    def _draw_loading_screen(self, text: str, progress: float):
         self.screen.fill((0, 0, 0))
 
-        text_surface = self.font.render('Loading assets...', True, (255, 255, 255))
-
+        # Draw text
+        text_surface = self.font.render(text, True, (255, 255, 255))
         center_width = self.window_size[0] // 2
         center_height = self.window_size[1] // 2
-        text_rect = text_surface.get_rect(center=(center_width, center_height))
-
+        text_rect = text_surface.get_rect(center=(center_width, center_height - 50))
         self.screen.blit(text_surface, text_rect)
+
+        # Draw progress bar
+        progress_bar_width = 200
+        progress_bar_height = 20
+        progress_bar_x = center_width - progress_bar_width // 2
+        progress_bar_y = center_height + 10
+        progress_fill = progress * progress_bar_width
+
+        # Draw progress bar background
+        pygame.draw.rect(
+            self.screen,
+            (255, 255, 255),
+            (progress_bar_x, progress_bar_y, progress_bar_width, progress_bar_height),
+            1,
+        )
+        # Fill the progress bar
+        if progress_fill > 0:
+            pygame.draw.rect(
+                self.screen,
+                (255, 255, 255),
+                (progress_bar_x, progress_bar_y, progress_fill, progress_bar_height),
+            )
+
         pygame.display.flip()
 
 

@@ -2,16 +2,20 @@ import os
 from datetime import datetime
 from typing import List
 
-from linked_list import CircularDoublyLinkedList
 from phase import Phase
+from linked_list import CircularDoublyLinkedList
 
 
-def get_files_from_path(path: str):
+def get_files_from_path(path: str) -> List[str]:
+    if os.path.isfile(path):
+        return [path]
+
     full_paths = []
     for entry in os.listdir(path):
         full_path = os.path.join(path, entry)
         if os.path.isfile(full_path):
             full_paths.append(full_path)
+
     return sorted(full_paths)
 
 

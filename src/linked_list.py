@@ -1,15 +1,23 @@
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.prev = None
+        self.next = None
+
+
 class CircularDoublyLinkedList:
     def __init__(self):
         self.head = None
         self.tail = None
 
-    def append(self, node):
+    def append(self, value):
+        new_node = Node(value)
         if self.head is None:
-            self.head = self.tail = node
-            node.prev = node.next = node
+            self.head = self.tail = new_node
+            new_node.prev = new_node.next = new_node
         else:
-            node.prev = self.tail
-            node.next = self.head
-            self.tail.next = node
-            self.head.prev = node
-            self.tail = node
+            new_node.prev = self.tail
+            new_node.next = self.head
+            self.tail.next = new_node
+            self.head.prev = new_node
+            self.tail = new_node

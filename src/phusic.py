@@ -43,7 +43,7 @@ class Game:
 
         self.linked_list = util.create_linked_list(self.phases)
         self.curr_phase = self.linked_list.head
-        self.next_phase = None
+        self.next_phase = Node(None)
 
         self.frames_for_transition = self.TRANSITION_DURATION * self.FPS
         self.fade_step_increment = self.TOTAL_FADE_STEPS / float(
@@ -64,16 +64,16 @@ class Game:
                         self._toggle_fullscreen()
 
                     if event.key == pygame.K_LEFT:
-                        self._change_phase(self.curr_phase.prev.value)
+                        self._change_phase(self.curr_phase.prev)
 
                     if event.key == pygame.K_RIGHT or event.key == pygame.K_SPACE:
-                        self._change_phase(self.curr_phase.next.value)
+                        self._change_phase(self.curr_phase.next)
 
                     if pygame.key.get_mods() & pygame.KMOD_CTRL:
                         if event.key == pygame.K_LEFT:
-                            self._set_phase(self.curr_phase.prev.value)
+                            self._set_phase(self.curr_phase.prev)
                         elif event.key == pygame.K_RIGHT:
-                            self._set_phase(self.curr_phase.next.value)
+                            self._set_phase(self.curr_phase.next)
                         elif event.key == pygame.K_c:
                             print("Shutting down")
                             exit(0)
@@ -175,41 +175,43 @@ class Game:
         phase.sound.play(-1)
         phase.background = pygame.transform.scale(phase.background, self.window_size)
 
-    def _change_phase(self, phase: Phase):
+    def _change_phase(self, phase_node: Node):
         if self.is_fading:
             return
 
-        if not phase:
+        if not phase_node:
             if not self.linked_list.head:
                 print("Linked list is empty")
                 exit(1)
 
             print("No next phase, reverting back to start...")
-            self.current_phase = self.linked_list.head
+            phase_node = self.linked_list.head
 
         self.is_fading = True
         self.fade_step = 0
-        self.next_phase = phase
+        self.next_phase = phase_node
 
+        phase = phase_node.value
         phase.sound.set_volume(0.0)
         phase.sound.play(-1)
         phase.background = pygame.transform.scale(phase.background, self.window_size)
 
-    def _set_phase(self, phase: Phase):
+    def _set_phase(self, phase_node: Node):
         """Update the current phase without fading"""
         self.curr_phase.value.sound.stop()
         self.is_fading = False
         self.fade_step = 0
 
+        phase = phase_node.value
         phase.sound.set_volume(1.0)
         phase.sound.play(-1)
         phase.background = pygame.transform.scale(phase.background, self.window_size)
 
-        self.curr_phase = phase
+        self.curr_phase = phase_node
 
     def _draw(self):
         curr_phase = self.curr_phase.value
-        next_phase = None if self.next_phase is None else self.next_phase.value
+        next_phase = self.next_phase.value
 
         if self.is_fading:
             # Handle fade background

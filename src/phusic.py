@@ -80,7 +80,8 @@ class Game:
 
                     for ending in self.endings:
                         if event.key == ending.key:
-                            self._change_phase(ending)
+                            ending_node = Node(ending)
+                            self._change_phase(ending_node)
 
                     for sfx in self.sfx:
                         if event.key == sfx.key:
@@ -198,6 +199,8 @@ class Game:
 
     def _set_phase(self, phase_node: Node):
         """Update the current phase without fading"""
+        if self.next_phase.value:
+            self.next_phase.value.sound.stop()
         self.curr_phase.value.sound.stop()
         self.is_fading = False
         self.fade_step = 0

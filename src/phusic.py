@@ -167,7 +167,6 @@ class Game:
         # Scale background
         self.window_size = self.screen.get_size()
         phase = self.curr_phase.value
-        phase.background = self.curr_phase.background.convert()
         phase.background = pygame.transform.scale(phase.background, self.window_size)
 
     def _initial_phase(self):

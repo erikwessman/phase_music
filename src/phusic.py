@@ -3,7 +3,6 @@ import pygame
 import argparse
 import sys
 import random
-from itertools import zip_longest
 from typing import List
 
 from phase import Phase
@@ -17,6 +16,7 @@ class Game:
     TRANSITION_DURATION = 5
     FPS = 60
     WINDOWED_SIZE = (1280, 720)
+    FULLSCREEN_SIZE = (1920, 1080)
     FONT_SIZE = 36
     FONT_COLOR = (255, 255, 255)
 
@@ -25,10 +25,12 @@ class Game:
         pygame.mixer.init()
 
         # Window
-        self.window_size = self.WINDOWED_SIZE
-        self.screen = pygame.display.set_mode(self.WINDOWED_SIZE)
+        self.window_size = self.FULLSCREEN_SIZE
+        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.font = pygame.font.Font(None, self.FONT_SIZE)
         pygame.display.set_caption("phusic")
+
+        self._draw_loading_screen()
 
         # Load stuff
         self.phases = self._get_phases(config)
@@ -38,7 +40,7 @@ class Game:
         # Setup state
         self.fade_step = 0
         self.is_fading = False
-        self.is_fullscreen = False
+        self.is_fullscreen = True
 
         self.linked_list = util.create_linked_list(self.phases)
         self.curr_phase = self.linked_list.head
@@ -250,6 +252,18 @@ class Game:
         text_surface = self.font.render(text, True, self.FONT_COLOR)
         self.screen.blit(text_surface, position)
 
+    def _draw_loading_screen(self):
+        self.screen.fill((0, 0, 0))
+
+        text_surface = self.font.render('Loading assets...', True, (255, 255, 255))
+
+        center_width = self.window_size[0] // 2
+        center_height = self.window_size[1] // 2
+        text_rect = text_surface.get_rect(center=(center_width, center_height))
+
+        self.screen.blit(text_surface, text_rect)
+        pygame.display.flip()
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -257,7 +271,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--config",
-        default="configs/eldritch_horror.json",
+        default="configs/blood_rage.json",
         type=str,
         help="Path to configuration file",
     )

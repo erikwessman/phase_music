@@ -10,6 +10,10 @@ Sfx: https://pixabay.com/
 
 ## 📖 Instructions
 
+Usage:
+
+`python3 src/phusic.py --config path/to/config`
+
 Keyboard shortcuts:
 
 - **Next Phase:** ➡️ Right Arrow or ⌨️ Space

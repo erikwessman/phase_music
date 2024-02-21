@@ -47,5 +47,6 @@
             "key": "K_4",
             "audio": "assets/sfx/power_up.mp3"
         }
-    ]
+    ],
+    "font": "assets/eldritch_horror/fonts/Ghoulish.ttf"
 }

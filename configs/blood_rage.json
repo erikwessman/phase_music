@@ -21,7 +21,7 @@
             "audio": "assets/blood_rage/quest/audio"
         },
         {
-            "name": "Ragnarök",
+            "name": "Ragnarok",
             "imgs": "assets/blood_rage/ragnarok/images",
             "audio": "assets/blood_rage/ragnarok/audio"
         },
@@ -36,31 +36,31 @@
             "key": "K_r",
             "name": "Raven",
             "img": "assets/blood_rage/raven/images",
-            "audio": "assets/blood_rage/shared_audio"
+            "audio": "assets/blood_rage/dunk.mp3"
         },
         {
             "key": "K_b",
             "name": "Bear",
             "img": "assets/blood_rage/bear/images",
-            "audio": "assets/blood_rage/shared_audio"
+            "audio": "assets/blood_rage/dunk.mp3"
         },
         {
             "key": "K_s",
             "name": "Serpent",
             "img": "assets/blood_rage/serpent/images",
-            "audio": "assets/blood_rage/shared_audio"
+            "audio": "assets/blood_rage/dunk.mp3"
         },
         {
             "key": "K_w",
             "name": "Wolf",
             "img": "assets/blood_rage/wolf/images",
-            "audio": "assets/blood_rage/shared_audio"
+            "audio": "assets/blood_rage/dunk.mp3"
         },
         {
             "key": "K_m",
             "name": "Ram",
             "img": "assets/blood_rage/ram/images",
-            "audio": "assets/blood_rage/shared_audio"
+            "audio": "assets/blood_rage/dunk.mp3"
         }
     ],
     "sfx": [
@@ -80,5 +80,6 @@
             "key": "K_4",
             "audio": "assets/sfx/angel.mp3"
         }
-    ]
+    ],
+    "font": "assets/blood_rage/fonts/Norse.otf"
 }

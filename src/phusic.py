@@ -28,8 +28,8 @@ class Game:
         # Window
         self.window_size = self.FULLSCREEN_SIZE
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-        self.font = pygame.font.Font(None, self.FONT_SIZE)
-        pygame.display.set_caption("phusic")
+        self.font = pygame.font.Font(config.get("font", None), self.FONT_SIZE)
+        pygame.display.set_caption("Phusic")
 
         # Load stuff
         self.phases = self._get_phases(config)

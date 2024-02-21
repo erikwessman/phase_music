@@ -2,11 +2,13 @@
 
 *Phase* in and out of different music depending on the phase... Get it?
 
-## Asset sources
+## 🌳 Asset sources
 
 Music: https://tabletopaudio.com/
 
 Sfx: https://pixabay.com/
+
+Fonts: https://www.fontspace.com/
 
 ## 📖 Instructions
 

@@ -18,7 +18,7 @@ class Game:
     FPS = 60
     WINDOWED_SIZE = (1280, 720)
     FULLSCREEN_SIZE = (1920, 1080)
-    FONT_SIZE = 36
+    FONT_SIZE = 42
     FONT_COLOR = (255, 255, 255)
 
     def __init__(self, config: dict):
@@ -244,7 +244,7 @@ class Game:
         # Draw current time
         curr_time = util.get_local_time()
         time_position = (
-            self.window_size[0] - self.FONT_SIZE - 75,
+            self.window_size[0] - self.FONT_SIZE - 55,
             self.window_size[1] - 10 - self.FONT_SIZE,
         )
         self._draw_text_with_outline(curr_time, time_position)

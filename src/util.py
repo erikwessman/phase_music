@@ -30,5 +30,5 @@ def create_linked_list(phases: List[Phase]) -> CircularDoublyLinkedList:
 
 def get_local_time():
     now = datetime.now()
-    time_as_string = now.strftime("%H:%M:%S")
+    time_as_string = now.strftime("%H:%M")
     return time_as_string

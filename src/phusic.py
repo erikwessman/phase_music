@@ -160,15 +160,17 @@ class Game:
 
     def _toggle_fullscreen(self):
         self.is_fullscreen = not self.is_fullscreen
+
         if self.is_fullscreen:
             self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         else:
             self.screen = pygame.display.set_mode(self.WINDOWED_SIZE)
 
-        # Scale background
         self.window_size = self.screen.get_size()
         phase = self.curr_phase.value
-        phase.background = pygame.transform.scale(phase.background, self.window_size)
+        # Re-load background image and scale
+        background = pygame.image.load(phase.img_path).convert()
+        phase.background = pygame.transform.scale(background, self.window_size)
 
     def _initial_phase(self):
         phase = self.curr_phase.value

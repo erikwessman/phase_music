@@ -79,6 +79,14 @@
         {
             "key": "K_4",
             "audio": "assets/sfx/angel.mp3"
+        },
+        {
+            "key": "K_5",
+            "audio": "assets/sfx/bell.mp3"
+        },
+        {
+            "key": "K_6",
+            "audio": "assets/sfx/crow.mp3"
         }
     ],
     "font": "assets/blood_rage/fonts/Norse.otf"

@@ -32,18 +32,22 @@
     ],
     "sfx": [
         {
+            "name": "Evil Laugh",
             "key": "K_1",
             "audio": "assets/sfx/evil-laugh.mp3"
         },
         {
+            "name": "Thunder",
             "key": "K_2",
             "audio": "assets/sfx/thunder.mp3"
         },
         {
+            "name": "Morning",
             "key": "K_3",
             "audio": "assets/sfx/morning.mp3"
         },
         {
+            "name": "Power Up",
             "key": "K_4",
             "audio": "assets/sfx/power_up.mp3"
         }

@@ -66,26 +66,32 @@
     "sfx": [
         {
             "key": "K_1",
+            "name": "Power Up",
             "audio": "assets/sfx/power_up.mp3"
         },
         {
             "key": "K_2",
+            "name": "Horn",
             "audio": "assets/sfx/horn.mp3"
         },
         {
             "key": "K_3",
+            "name": "Roar",
             "audio": "assets/sfx/roar.mp3"
         },
         {
             "key": "K_4",
+            "name": "Angel",
             "audio": "assets/sfx/angel.mp3"
         },
         {
             "key": "K_5",
+            "name": "Bell",
             "audio": "assets/sfx/bell.mp3"
         },
         {
             "key": "K_6",
+            "name": "Crow",
             "audio": "assets/sfx/crow.mp3"
         }
     ],

@@ -40,10 +40,9 @@ def get_local_time():
 
 
 def generate_title_str(title: str) -> str:
-    width = 50
-    char = "-"
-    title = f" {title} ".center(width, char)
-    return title
+    char = "."
+    border = char * (len(title) + 4)
+    return f"\n{border}\n{char} {title} {char}\n{border}\n"
 
 
 def readable_keycode(key: str) -> str:

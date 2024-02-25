@@ -4,12 +4,14 @@ import argparse
 import sys
 import random
 from typing import List
-
-from phase import Phase
-from ending import Ending
-from sfx import Sfx
+from config_cop import ConfigCop
+from dataobjects.config import Config
+from dataobjects.phase import Phase
+from dataobjects.ending import Ending
+from dataobjects.sfx import Sfx
 from linked_list import Node
-import util
+import util as util
+from constants import KEYBIND_FULLSCREEN, PATH_CONTROLS
 
 
 class Game:
@@ -21,14 +23,14 @@ class Game:
     FONT_SIZE = 42
     FONT_COLOR = (255, 255, 255)
 
-    def __init__(self, config: dict):
+    def __init__(self, config: Config):
         pygame.font.init()
         pygame.mixer.init()
 
         # Window
         self.window_size = self.FULLSCREEN_SIZE
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-        self.font = pygame.font.Font(config.get("font", None), self.FONT_SIZE)
+        self.font = pygame.font.Font(config.font, self.FONT_SIZE)
         pygame.display.set_caption("Phusic")
 
         # Load stuff
@@ -60,7 +62,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_F11 or event.key == pygame.K_f:
+                    if event.key == getattr(pygame, KEYBIND_FULLSCREEN):
                         self._toggle_fullscreen()
 
                     if event.key == pygame.K_LEFT:
@@ -93,22 +95,22 @@ class Game:
         pygame.quit()
         sys.exit()
 
-    def _get_phases(self, config: dict) -> list[Phase]:
+    def _get_phases(self, config: Config) -> list[Phase]:
         self._draw_loading_screen("Loading phase assets...", 0)
 
         phases = []
-        total_phases = len(config["phases"])
+        total_phases = len(config.phases)
 
-        for i, phase in enumerate(config["phases"]):
+        for i, phase in enumerate(config.phases):
             phase_instances = []
 
-            audio_paths = util.get_files_from_path(phase["audio"])
-            img_paths = util.get_files_from_path(phase["imgs"])
+            audio_paths = util.get_files_from_path(phase.audio)
+            img_paths = util.get_files_from_path(phase.imgs)
 
             for img in img_paths:
                 # Grab images sequentially, but grab audio randomly
                 audio = random.choice(audio_paths)
-                phase_instances.append(Phase(phase["name"], audio, img))
+                phase_instances.append(Phase(phase.name, audio, img))
 
             phases.append(phase_instances)
 
@@ -126,17 +128,17 @@ class Game:
 
         return ordered_phases
 
-    def _get_endings(self, config: dict) -> List[Ending]:
+    def _get_endings(self, config: Config) -> List[Ending]:
         self._draw_loading_screen("Loading ending assets...", 0)
 
         endings = []
-        total_endings = len(config["endings"])
+        total_endings = len(config.endings)
 
-        for i, ending in enumerate(config["endings"]):
-            audio = random.choice(util.get_files_from_path(ending["audio"]))
-            imgs = random.choice(util.get_files_from_path(ending["img"]))
+        for i, ending in enumerate(config.endings):
+            audio = random.choice(util.get_files_from_path(ending.audio))
+            imgs = random.choice(util.get_files_from_path(ending.img))
             endings.append(
-                Ending(getattr(pygame, ending["key"]), ending["name"], audio, imgs)
+                Ending(getattr(pygame, ending.key), ending.name, audio, imgs)
             )
 
             progress = (i + 1) / total_endings
@@ -144,14 +146,14 @@ class Game:
 
         return endings
 
-    def _get_sfx(self, config: dict) -> List[Sfx]:
+    def _get_sfx(self, config: Config) -> List[Sfx]:
         self._draw_loading_screen("Loading SFX assets...", 0)
 
         sfxs = []
-        total_sfxs = len(config["sfx"])
+        total_sfxs = len(config.sfx)
 
-        for i, sfx in enumerate(config["sfx"]):
-            sfxs.append(Sfx(getattr(pygame, sfx["key"]), sfx["audio"]))
+        for i, sfx in enumerate(config.sfx):
+            sfxs.append(Sfx(getattr(pygame, sfx.key), sfx.audio))
 
             progress = (i + 1) / total_sfxs
             self._draw_loading_screen("Loading SFX assets...", progress)
@@ -315,8 +317,12 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    with open(args.config, "r") as file:
-        config = json.load(file)
+    # ConfigCop.assert_valid_configs()
+    config = ConfigCop.parse_config(args.config)
+
+    # Write controls
+    with open(PATH_CONTROLS, "w") as file:
+        file.write(util.generate_controls_str(config))
 
     game = Game(config)
     game.run()

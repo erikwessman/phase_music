@@ -1,4 +1,4 @@
-from phase import Phase
+from dataobjects.phase import Phase
 
 
 class Ending(Phase):

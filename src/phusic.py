@@ -16,20 +16,20 @@ from constants import KEYBIND_FULLSCREEN, PATH_CONTROLS
 
 class Game:
     TOTAL_FADE_STEPS = 255
-    TRANSITION_DURATION = 5
-    FPS = 60
-    WINDOWED_SIZE = (1280, 720)
-    FULLSCREEN_SIZE = (1920, 1080)
+    TRANSITION_DURATION = 5  # Seconds
+    FPS = 20
     FONT_SIZE = 42
     FONT_COLOR = (255, 255, 255)
+    LOGICAL_SIZE = (1920, 1080)
+
+    logical_surface = pygame.Surface(LOGICAL_SIZE)
 
     def __init__(self, config: Config):
         pygame.font.init()
         pygame.mixer.init()
 
         # Window
-        self.window_size = self.FULLSCREEN_SIZE
-        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode(self.LOGICAL_SIZE, pygame.RESIZABLE)
         self.font = pygame.font.Font(config.font, self.FONT_SIZE)
         pygame.display.set_caption("Phusic")
 
@@ -164,21 +164,15 @@ class Game:
         self.is_fullscreen = not self.is_fullscreen
 
         if self.is_fullscreen:
-            self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+            self.logical_surface = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         else:
-            self.screen = pygame.display.set_mode(self.WINDOWED_SIZE)
-
-        self.window_size = self.screen.get_size()
-        phase = self.curr_phase.value
-        # Re-load background image and scale
-        background = pygame.image.load(phase.img_path).convert()
-        phase.background = pygame.transform.scale(background, self.window_size)
+            self.logical_surface = pygame.display.set_mode(self.LOGICAL_SIZE)
 
     def _initial_phase(self):
         phase = self.curr_phase.value
         phase.sound.set_volume(1.0)
         phase.sound.play(-1)
-        phase.background = pygame.transform.scale(phase.background, self.window_size)
+        phase.background = pygame.transform.scale(phase.background, self.LOGICAL_SIZE)
 
     def _change_phase(self, phase_node: Node):
         if self.is_fading:
@@ -199,7 +193,7 @@ class Game:
         phase = phase_node.value
         phase.sound.set_volume(0.0)
         phase.sound.play(-1)
-        phase.background = pygame.transform.scale(phase.background, self.window_size)
+        phase.background = pygame.transform.scale(phase.background, self.LOGICAL_SIZE)
 
     def _set_phase(self, phase_node: Node):
         """Update the current phase without fading"""
@@ -212,7 +206,7 @@ class Game:
         phase = phase_node.value
         phase.sound.set_volume(1.0)
         phase.sound.play(-1)
-        phase.background = pygame.transform.scale(phase.background, self.window_size)
+        phase.background = pygame.transform.scale(phase.background, self.LOGICAL_SIZE)
 
         self.curr_phase = phase_node
 
@@ -220,12 +214,17 @@ class Game:
         curr_phase = self.curr_phase.value
         next_phase = self.next_phase.value
 
+        window_size = pygame.display.get_surface().get_size()
+        scaled_surface = pygame.transform.smoothscale(self.logical_surface, window_size)
+
+        self.screen.blit(scaled_surface, (0, 0))
+
         if self.is_fading:
             # Handle fade background
             alpha = int(self.fade_step * (255 / self.TOTAL_FADE_STEPS))
             next_phase.background.set_alpha(alpha)
-            self.screen.blit(curr_phase.background, (0, 0))
-            self.screen.blit(next_phase.background, (0, 0))
+            self.logical_surface.blit(curr_phase.background, (0, 0))
+            self.logical_surface.blit(next_phase.background, (0, 0))
 
             # Handle fade sound
             new_volume = alpha / 255.0
@@ -239,17 +238,17 @@ class Game:
                 curr_phase.sound.stop()
                 self.curr_phase = self.next_phase
         else:
-            self.screen.blit(curr_phase.background, (0, 0))
+            self.logical_surface.blit(curr_phase.background, (0, 0))
 
             # Draw phase name
-            phase_position = (20, self.window_size[1] - 10 - self.FONT_SIZE)
+            phase_position = (20, self.LOGICAL_SIZE[1] - 10 - self.FONT_SIZE)
             self._draw_text_with_outline(curr_phase.name, phase_position)
 
         # Draw current time
         curr_time = util.get_local_time()
         time_position = (
-            self.window_size[0] - self.FONT_SIZE - 55,
-            self.window_size[1] - 10 - self.FONT_SIZE,
+            self.LOGICAL_SIZE[0] - self.FONT_SIZE - 55,
+            self.LOGICAL_SIZE[1] - 10 - self.FONT_SIZE,
         )
         self._draw_text_with_outline(curr_time, time_position)
 
@@ -265,20 +264,20 @@ class Game:
             if ow != 0 or oh != 0
         ]:
             text_surface = self.font.render(text, True, (0, 0, 0))
-            self.screen.blit(text_surface, (x + dx, y + dy))
+            self.logical_surface.blit(text_surface, (x + dx, y + dy))
 
         text_surface = self.font.render(text, True, self.FONT_COLOR)
-        self.screen.blit(text_surface, position)
+        self.logical_surface.blit(text_surface, position)
 
     def _draw_loading_screen(self, text: str, progress: float):
-        self.screen.fill((0, 0, 0))
+        self.logical_surface.fill((0, 0, 0))
 
         # Draw text
         text_surface = self.font.render(text, True, (255, 255, 255))
-        center_width = self.window_size[0] // 2
-        center_height = self.window_size[1] // 2
+        center_width = self.LOGICAL_SIZE[0] // 2
+        center_height = self.LOGICAL_SIZE[1] // 2
         text_rect = text_surface.get_rect(center=(center_width, center_height - 50))
-        self.screen.blit(text_surface, text_rect)
+        self.logical_surface.blit(text_surface, text_rect)
 
         # Draw progress bar
         progress_bar_width = 200
@@ -289,7 +288,7 @@ class Game:
 
         # Draw progress bar background
         pygame.draw.rect(
-            self.screen,
+            self.logical_surface,
             (255, 255, 255),
             (progress_bar_x, progress_bar_y, progress_bar_width, progress_bar_height),
             1,
@@ -297,7 +296,7 @@ class Game:
         # Fill the progress bar
         if progress_fill > 0:
             pygame.draw.rect(
-                self.screen,
+                self.logical_surface,
                 (255, 255, 255),
                 (progress_bar_x, progress_bar_y, progress_fill, progress_bar_height),
             )

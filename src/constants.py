@@ -1,5 +1,3 @@
-# we doin antipatterns out here 😈
-
 KEYBIND_FULLSCREEN = "K_f"
 
 PATH_CONFIGS = "configs"

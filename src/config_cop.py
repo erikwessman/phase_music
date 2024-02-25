@@ -1,7 +1,6 @@
 import json
-from typing import get_type_hints
 from constants import PATH_CONFIGS
-from dataobjects.config import Config, ConfigEnding, ConfigPhase, ConfigSfx
+from dataobjects.config import Config
 from util import get_files_from_path
 
 
@@ -33,7 +32,6 @@ class ConfigCop:
     @staticmethod
     def assert_valid(config: Config) -> None:
         return
-
         if config is None:
             raise ValueError("Config is None")
 
@@ -66,14 +64,3 @@ class ConfigCop:
 
         if config.font is None:
             raise ValueError("Config has no font")
-
-
-# phase_config: ConfigPhase = ConfigPhase()
-# phase_config.name = "phase1"
-# phase_config.imgs = "assets/phase1/imgs"
-# # phase_config.audio = "wasd"
-
-# conf = Config()
-# conf.phases = [phase_config]
-
-# ConfigCop.assert_valid(conf)

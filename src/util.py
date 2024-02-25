@@ -1,9 +1,8 @@
-import json
 import os
 from datetime import datetime
 from typing import List
 from tabulate import tabulate
-from constants import KEYBIND_FULLSCREEN
+from constants import KEYBIND_FULLSCREEN, PATH_CONTROLS
 from dataobjects.config import Config
 from dataobjects.phase import Phase
 from linked_list import CircularDoublyLinkedList
@@ -41,9 +40,10 @@ def get_local_time():
 
 
 def generate_title_str(title: str) -> str:
-    char = " "
-    border = char * (len(title) + 4)
-    return f"\n{border}\n{char} {title} {char}\n{border}\n"
+    width = 50
+    char = "-"
+    title = f" {title} ".center(width, char)
+    return title
 
 
 def readable_keycode(key: str) -> str:
@@ -58,27 +58,27 @@ def readable_keycode(key: str) -> str:
     return key
 
 
-def generate_controls_str(config: Config) -> str:
+def generate_controls_file(config: Config) -> str:
     headers = ["Action", "Key"]
     tablefmt = "github"
-    output = ""
 
-    # Generic
-    output += generate_title_str("Generic") + "\n"
-    rows = [
-        ["Fullscreen", readable_keycode(KEYBIND_FULLSCREEN)],
-        ["Next", "<- -> or Space"],
-    ]
-    output += tabulate(rows, headers, tablefmt) + "\n"
+    with open(PATH_CONTROLS, "w") as f:
+        # Generic
+        f.write(generate_title_str("Generic") + "\n\n")
+        rows = [
+            ["Fullscreen", readable_keycode(KEYBIND_FULLSCREEN)],
+            ["Next", "<- -> or Space"],
+        ]
+        f.write(tabulate(rows, headers, tablefmt) + "\n\n")
 
-    # Sfx
-    sfx = [(sfx.name, readable_keycode(sfx.key)) for sfx in config.sfx]
-    output += generate_title_str("SFX") + "\n"
-    output += tabulate(sfx, headers, tablefmt) + "\n"
+        # Sfx
+        sfx = [(sfx.name, readable_keycode(sfx.key)) for sfx in config.sfx]
+        f.write(generate_title_str("SFX") + "\n\n")
+        f.write(tabulate(sfx, headers, tablefmt) + "\n\n")
 
-    # Endings
-    endings = [(ending.name, readable_keycode(ending.key)) for ending in config.endings]
-    output += generate_title_str("Endings") + "\n"
-    output += tabulate(endings, headers, tablefmt) + "\n"
-
-    return output
+        # Endings
+        endings = [
+            (ending.name, readable_keycode(ending.key)) for ending in config.endings
+        ]
+        f.write(generate_title_str("Endings") + "\n\n")
+        f.write(tabulate(endings, headers, tablefmt) + "\n\n")

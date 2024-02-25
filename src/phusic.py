@@ -317,12 +317,12 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    # ConfigCop.assert_valid_configs()
+    # Validate configs
+    ConfigCop.assert_valid_configs()
     config = ConfigCop.parse_config(args.config)
 
     # Write controls
-    with open(PATH_CONTROLS, "w") as file:
-        file.write(util.generate_controls_str(config))
+    util.generate_controls_file(config)
 
     game = Game(config)
     game.run()

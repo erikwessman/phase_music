@@ -1,17 +1,18 @@
-import json
-import pygame
 import argparse
-import sys
 import random
+import sys
 from typing import List
+
+import pygame
+
+import util as util
 from config_cop import ConfigCop
+from constants import KEYBIND_FULLSCREEN
 from dataobjects.config import Config
-from dataobjects.phase import Phase
 from dataobjects.ending import Ending
+from dataobjects.phase import Phase
 from dataobjects.sfx import Sfx
 from linked_list import Node
-import util as util
-from constants import KEYBIND_FULLSCREEN, PATH_CONTROLS
 
 
 class Game:
@@ -20,8 +21,9 @@ class Game:
     FPS = 20
     FONT_SIZE = 42
     FONT_COLOR = (255, 255, 255)
-    LOGICAL_SIZE = (1920, 1080)
+    INITIAL_WINDOW_SIZE = (1280, 720)
 
+    LOGICAL_SIZE = (2048, 1080)
     logical_surface = pygame.Surface(LOGICAL_SIZE)
 
     def __init__(self, config: Config):
@@ -29,7 +31,9 @@ class Game:
         pygame.mixer.init()
 
         # Window
-        self.screen = pygame.display.set_mode(self.LOGICAL_SIZE, pygame.RESIZABLE)
+        self.__screen = pygame.display.set_mode(
+            self.INITIAL_WINDOW_SIZE, pygame.RESIZABLE
+        )
         self.font = pygame.font.Font(config.font, self.FONT_SIZE)
         pygame.display.set_caption("Phusic")
 
@@ -52,7 +56,7 @@ class Game:
             self.frames_for_transition
         )
 
-    def run(self):
+    def run(self) -> None:
         clock = pygame.time.Clock()
         running = True
         self._initial_phase()
@@ -89,7 +93,8 @@ class Game:
                         if event.key == sfx.key:
                             sfx.sound.play()
 
-            self._draw()
+            self._draw_phase()
+            self._render()
             clock.tick(self.FPS)
 
         pygame.quit()
@@ -160,7 +165,7 @@ class Game:
 
         return sfxs
 
-    def _toggle_fullscreen(self):
+    def _toggle_fullscreen(self) -> None:
         self.is_fullscreen = not self.is_fullscreen
 
         if self.is_fullscreen:
@@ -168,13 +173,13 @@ class Game:
         else:
             self.logical_surface = pygame.display.set_mode(self.LOGICAL_SIZE)
 
-    def _initial_phase(self):
+    def _initial_phase(self) -> None:
         phase = self.curr_phase.value
         phase.sound.set_volume(1.0)
         phase.sound.play(-1)
         phase.background = pygame.transform.scale(phase.background, self.LOGICAL_SIZE)
 
-    def _change_phase(self, phase_node: Node):
+    def _change_phase(self, phase_node: Node) -> None:
         if self.is_fading:
             return
 
@@ -195,7 +200,7 @@ class Game:
         phase.sound.play(-1)
         phase.background = pygame.transform.scale(phase.background, self.LOGICAL_SIZE)
 
-    def _set_phase(self, phase_node: Node):
+    def _set_phase(self, phase_node: Node) -> None:
         """Update the current phase without fading"""
         if self.next_phase.value:
             self.next_phase.value.sound.stop()
@@ -210,14 +215,9 @@ class Game:
 
         self.curr_phase = phase_node
 
-    def _draw(self):
+    def _draw_phase(self) -> None:
         curr_phase = self.curr_phase.value
         next_phase = self.next_phase.value
-
-        window_size = pygame.display.get_surface().get_size()
-        scaled_surface = pygame.transform.smoothscale(self.logical_surface, window_size)
-
-        self.screen.blit(scaled_surface, (0, 0))
 
         if self.is_fading:
             # Handle fade background
@@ -254,7 +254,7 @@ class Game:
 
         pygame.display.flip()
 
-    def _draw_text_with_outline(self, text, position, outline_width: int = 2):
+    def _draw_text_with_outline(self, text, position, outline_width: int = 2) -> None:
         x, y = position
 
         for dx, dy in [
@@ -269,7 +269,7 @@ class Game:
         text_surface = self.font.render(text, True, self.FONT_COLOR)
         self.logical_surface.blit(text_surface, position)
 
-    def _draw_loading_screen(self, text: str, progress: float):
+    def _draw_loading_screen(self, text: str, progress: float) -> None:
         self.logical_surface.fill((0, 0, 0))
 
         # Draw text
@@ -301,6 +301,14 @@ class Game:
                 (progress_bar_x, progress_bar_y, progress_fill, progress_bar_height),
             )
 
+        self._render()
+
+    def _render(self) -> None:
+        """Main render loop."""
+        window_size = pygame.display.get_surface().get_size()
+        scaled_surface = pygame.transform.smoothscale(self.logical_surface, window_size)
+
+        self.__screen.blit(scaled_surface, (0, 0))
         pygame.display.flip()
 
 

@@ -1,6 +1,7 @@
 import json
 
 from pydantic import ValidationError
+
 from constants import PATH_CONFIGS
 from dataobjects.config import Config
 from util import generate_title_str, get_files_from_path

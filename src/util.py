@@ -1,7 +1,9 @@
 import os
 from datetime import datetime
 from typing import List
+
 from tabulate import tabulate
+
 from constants import KEYBIND_FULLSCREEN, PATH_CONTROLS
 from dataobjects.config import Config
 from dataobjects.phase import Phase

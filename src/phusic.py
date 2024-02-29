@@ -253,30 +253,23 @@ class Game:
 
     def _render(self) -> None:
         window_size = pygame.display.get_surface().get_size()
-        logical_size = self.logical_surface.get_size()
-        logical_aspect_ratio = logical_size[0] / logical_size[1]
+        logical_aspect_ratio = self.LOGICAL_SIZE[0] / self.LOGICAL_SIZE[1]
         window_aspect_ratio = window_size[0] / window_size[1]
 
-        # Determine the new size for the scaled surface based on aspect ratio comparison
         if logical_aspect_ratio > window_aspect_ratio:
-            # Window is taller than the logical surface, scale by width
             new_width = window_size[0]
             new_height = int(new_width / logical_aspect_ratio)
         else:
-            # Window is wider than the logical surface, scale by height
             new_height = window_size[1]
             new_width = int(new_height * logical_aspect_ratio)
 
-        # Create a new surface that fits the window size while maintaining the aspect ratio
         scaled_surface = pygame.transform.smoothscale(
             self.logical_surface, (new_width, new_height)
         )
 
-        # Calculate position to center the scaled surface in the window
         x_position = (window_size[0] - new_width) // 2
         y_position = (window_size[1] - new_height) // 2
 
-        # Fill the screen with black before blitting the scaled surface
         self.__screen.fill((0, 0, 0))
         self.__screen.blit(scaled_surface, (x_position, y_position))
         pygame.display.flip()

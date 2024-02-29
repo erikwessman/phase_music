@@ -1,5 +1,6 @@
 import json
 import random
+import time
 from typing import List
 
 import pygame
@@ -13,18 +14,26 @@ from dataobjects.sfx import Sfx
 from util import generate_title_str, get_files_from_path
 
 
-class ConfigManager:
-    def get(self, config: ConfigSchema) -> dict:
-        return {
-            "phases": self._get_phases(config),
-            "endings": self._get_endings(config),
-            "sfx": self._get_sfx(config),
-        }
+class ConfigParser:
+    def get_assets(self, config: ConfigSchema) -> dict:
+        start_time = time.time()
+        phases = self._get_phases(config)
+        print("Phases:", time.time() - start_time)
+
+        start_time = time.time()
+        endings = self._get_endings(config)
+        print("Endings:", time.time() - start_time)
+
+        start_time = time.time()
+        sfx = self._get_sfx(config)
+        print("Sfx:", time.time() - start_time)
+
+        return {"phases": phases, "endings": endings, "sfx": sfx}
 
     def _get_phases(self, config: ConfigSchema) -> list[Phase]:
         phases = []
 
-        for i, phase in enumerate(config.phases):
+        for phase in config.phases:
             phase_instances = []
 
             audio_paths = get_files_from_path(phase.audio)
@@ -67,19 +76,21 @@ class ConfigManager:
 
         return sfxs
 
-    def parse_config(self, path: str) -> ConfigSchema:
+    @staticmethod
+    def parse_schema(path: str) -> ConfigSchema:
         with open(path) as f:
             data = json.load(f)
 
         return ConfigSchema(**data)
 
-    def assert_valid_configs(self) -> None:
+    @staticmethod
+    def assert_valid_configs() -> None:
         files = get_files_from_path(PATH_CONFIGS, "json")
         error = False
 
         for file in files:
             try:
-                self.parse_config(file)
+                ConfigParser.parse_schema(file)
             except ValidationError as e:
                 print(generate_title_str(f"Invalid config: {file}"))
                 print(e)

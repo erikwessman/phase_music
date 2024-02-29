@@ -1,10 +1,11 @@
 import argparse
 import sys
+import time
 
 import pygame
 
 import util as util
-from config_manager import ConfigManager
+from config_parser import ConfigParser
 from constants import KEYBIND_FULLSCREEN
 from dataobjects.config import ConfigSchema
 from linked_list import Node
@@ -39,8 +40,14 @@ class Game:
         pygame.display.set_caption("Phusic")
 
         # Load stuff
-        getter = ConfigManager()
-        res = getter.get(config)
+        getter = ConfigParser()
+
+        start_time = time.time()
+        res = getter.get_assets(config)
+        end_time = time.time()
+
+        print(f"Execution time: {end_time - start_time} seconds")
+
         self.phases = res["phases"]
         self.endings = res["endings"]
         self.sfx = res["sfx"]
@@ -259,9 +266,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Validate configs
-    config_manager = ConfigManager()
-    config_manager.assert_valid_configs()
-    config = config_manager.parse_config(args.config)
+    ConfigParser.assert_valid_configs()
+    config = ConfigParser.parse_schema(args.config)
 
     # Write controls
     util.generate_controls_file(config)

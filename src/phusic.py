@@ -1,4 +1,5 @@
 import argparse
+import random
 import sys
 import time
 
@@ -26,46 +27,50 @@ class Game:
     LOGICAL_SIZE = (2048, 1080)
     logical_surface = pygame.Surface(LOGICAL_SIZE)
 
-    _running = True
+    # State
+    running = True
+    fade_step = 0
+    is_fading = False
+    is_fullscreen = True
 
     def __init__(self, config: ConfigSchema):
         pygame.font.init()
+        pygame.mixer.pre_init(44100, -16, 1, 512)
         pygame.mixer.init()
 
-        # Window
         self.__screen = pygame.display.set_mode(
             self.INITIAL_WINDOW_SIZE, pygame.RESIZABLE
         )
         self.font = pygame.font.Font(config.font, self.FONT_SIZE)
         pygame.display.set_caption("Phusic")
 
-        # Load stuff
-        getter = ConfigParser()
+    def run(self) -> None:
+        clock = pygame.time.Clock()
 
-        start_time = time.time()
-        res = getter.get_assets(config)
-        end_time = time.time()
+        parser = ConfigParser()
+        parser.load_assets(config)
 
-        print(f"Execution time: {end_time - start_time} seconds")
+        fake_progress = 0
+        while parser.status()["loading"]:
+            load = parser.status()["latest_load"]
+            fake_progress += 0.02
+            self._draw_loading_screen(f"Loading: {load}", fake_progress % 1)
+            self._render()
+            time.sleep(0.01)
 
+        res = parser.get_assets()
         self.phases = res["phases"]
         self.endings = res["endings"]
         self.sfx = res["sfx"]
-
-        # Setup state
-        self.fade_step = 0
-        self.is_fading = False
-        self.is_fullscreen = True
 
         self.linked_list = util.create_linked_list(self.phases)
         self.curr_phase = self.linked_list.head
         self.next_phase = Node(None)
 
-    def run(self) -> None:
-        clock = pygame.time.Clock()
         self._initial_phase()
 
-        while self._running:
+        # Main loop
+        while self.running:
             self._handle_events()
             self._draw_phase()
             self._render()
@@ -77,7 +82,7 @@ class Game:
     def _handle_events(self) -> None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self._running = False
+                self.running = False
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == getattr(pygame, KEYBIND_FULLSCREEN):
@@ -95,7 +100,6 @@ class Game:
                     elif event.key == pygame.K_RIGHT:
                         self._set_phase(self.curr_phase.next)
                     elif event.key == pygame.K_c:
-                        print("Shutting down")
                         exit(0)
 
                 for ending in self.endings:

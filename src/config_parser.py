@@ -1,7 +1,9 @@
 import json
 import random
+import threading
 import time
-from typing import List
+from ast import Dict
+from typing import List, Optional
 
 import pygame
 from pydantic import ValidationError
@@ -15,25 +17,36 @@ from util import generate_title_str, get_files_from_path
 
 
 class ConfigParser:
-    def get_assets(self, config: ConfigSchema) -> dict:
-        start_time = time.time()
+    _assets: Optional[Dict] = None
+    _latest_load: str = ""
+
+    def load_assets(self, config: ConfigSchema) -> None:
+        t = threading.Thread(target=self._load_assets_thread, args=(config,))
+        t.start()
+
+    def _load_assets_thread(self, config: ConfigSchema) -> None:
         phases = self._get_phases(config)
-        print("Phases:", time.time() - start_time)
-
-        start_time = time.time()
         endings = self._get_endings(config)
-        print("Endings:", time.time() - start_time)
-
-        start_time = time.time()
         sfx = self._get_sfx(config)
-        print("Sfx:", time.time() - start_time)
+        self._assets = {"phases": phases, "endings": endings, "sfx": sfx}
 
-        return {"phases": phases, "endings": endings, "sfx": sfx}
+    def get_assets(self) -> dict:
+        if self._assets is None:
+            raise ValueError("Assets not loaded, use load_assets() first")
+
+        return self._assets
+
+    def status(self) -> dict:
+        return {
+            "loading": True if self._assets is None else False,
+            "latest_load": self._latest_load,
+        }
 
     def _get_phases(self, config: ConfigSchema) -> list[Phase]:
         phases = []
 
         for phase in config.phases:
+            self._latest_load = phase.name
             phase_instances = []
 
             audio_paths = get_files_from_path(phase.audio)
@@ -60,6 +73,7 @@ class ConfigParser:
         endings = []
 
         for ending in config.endings:
+            self._latest_load = ending.name
             audio = random.choice(get_files_from_path(ending.audio))
             imgs = random.choice(get_files_from_path(ending.img))
             endings.append(
@@ -72,6 +86,7 @@ class ConfigParser:
         sfxs = []
 
         for sfx in config.sfx:
+            self._latest_load
             sfxs.append(Sfx(getattr(pygame, sfx.key), sfx.audio))
 
         return sfxs

@@ -14,8 +14,13 @@
             "audio": "assets/sfx/evil-laugh.mp3"
         },
         {
-            "name": "Haunt Roll",
+            "name": "Thunder",
             "key": "K_2",
+            "audio": "assets/sfx/thunder.mp3"
+        },
+        {
+            "name": "Haunt Roll",
+            "key": "K_3",
             "audio": "assets/sfx/evil-laugh.mp3"
         }
     ],

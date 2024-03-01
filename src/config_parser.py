@@ -16,32 +16,37 @@ from util import generate_title_str, get_files_from_path
 
 
 class ConfigParser:
-    _assets: Optional[Dict] = None
     _latest_load: str = ""
 
-    def load_assets(self, config: ConfigSchema) -> None:
-        t = threading.Thread(target=self._load_assets_thread, args=(config,))
-        t.start()
+    _phases: Optional[List[Phase]] = None
+    _endings: Optional[List[Ending]] = None
+    _sfxs: Optional[List[Sfx]] = None
 
-    def _load_assets_thread(self, config: ConfigSchema) -> None:
-        phases = self._get_phases(config)
-        endings = self._get_endings(config)
-        sfx = self._get_sfx(config)
-        self._assets = {"phases": phases, "endings": endings, "sfx": sfx}
+    def load_assets(self, config: ConfigSchema) -> None:
+        for method in [self._load_phases, self._load_endings, self._load_sfx]:
+            thread = threading.Thread(target=method, args=(config,))
+            thread.start()
 
     def get_assets(self) -> dict:
-        if self._assets is None:
+        if not self._loading_complete():
             raise ValueError("Assets not loaded, use load_assets() first")
 
-        return self._assets
+        return {
+            "phases": self._phases,
+            "endings": self._endings,
+            "sfx": self._sfxs,
+        }
 
     def status(self) -> dict:
         return {
-            "loading": True if self._assets is None else False,
+            "loading": not self._loading_complete(),
             "latest_load": self._latest_load,
         }
 
-    def _get_phases(self, config: ConfigSchema) -> list[Phase]:
+    def _loading_complete(self) -> bool:
+        return all(asset is not None for asset in [self._phases, self._endings, self._sfxs])
+
+    def _load_phases(self, config: ConfigSchema) -> None:
         phases = []
 
         for phase in config.phases:
@@ -66,9 +71,9 @@ class ConfigParser:
                 phase_index = i % len(phase)
                 ordered_phases.append(phase[phase_index])
 
-        return ordered_phases
+        self._phases = ordered_phases
 
-    def _get_endings(self, config: ConfigSchema) -> List[Ending]:
+    def _load_endings(self, config: ConfigSchema) -> None:
         endings = []
 
         for ending in config.endings:
@@ -79,16 +84,16 @@ class ConfigParser:
                 Ending(getattr(pygame, ending.key), ending.name, audio, imgs)
             )
 
-        return endings
+        self._endings = endings
 
-    def _get_sfx(self, config: ConfigSchema) -> List[Sfx]:
+    def _load_sfx(self, config: ConfigSchema) -> None:
         sfxs = []
 
         for sfx in config.sfx:
             self._latest_load
             sfxs.append(Sfx(getattr(pygame, sfx.key), sfx.audio))
 
-        return sfxs
+        self._sfxs = sfxs
 
     @staticmethod
     def parse_schema(path: str) -> ConfigSchema:

@@ -1,6 +1,6 @@
 # Phase Music
 
-*Phase* in and out of different music depending on the phase... Get it?
+_Phase_ in and out of different music depending on the phase... Get it?
 
 ## 🌳 Asset sources
 
@@ -23,3 +23,13 @@ Keyboard shortcuts:
 - **Fullscreen Mode:** 🖥 F or F11
 - **Stop/Exit:** 🛑 Ctrl-C
 - **Instant Phase Change (No Fade):** ⚡ Ctrl + Left/Right Arrow
+
+## 👷 Dev
+
+### ❗ About Docker (& kool.dev)
+
+Docker is **NOT** supported (at least not tested), is only used for kool.dev.
+
+But here are some fun kool commands:
+
+- `kool run format`

@@ -1,9 +1,11 @@
 import os
 from datetime import datetime
 from typing import List
+
 from tabulate import tabulate
+
 from constants import KEYBIND_FULLSCREEN, PATH_CONTROLS
-from dataobjects.config import Config
+from dataobjects.config import ConfigSchema
 from dataobjects.phase import Phase
 from linked_list import CircularDoublyLinkedList
 
@@ -57,7 +59,7 @@ def readable_keycode(key: str) -> str:
     return key
 
 
-def generate_controls_file(config: Config) -> str:
+def generate_controls_file(config: ConfigSchema) -> str:
     headers = ["Action", "Key"]
     tablefmt = "github"
 

@@ -1,28 +1,29 @@
 from typing import List
+
 from pydantic import BaseModel
 
 
-class ConfigPhase(BaseModel):
+class ConfigPhaseSchema(BaseModel):
     name: str
     imgs: str
     audio: str
 
 
-class ConfigEnding(BaseModel):
+class ConfigEndingSchema(BaseModel):
     key: str
     name: str
     img: str
     audio: str
 
 
-class ConfigSfx(BaseModel):
+class ConfigSfxSchema(BaseModel):
     name: str
     key: str
     audio: str
 
 
-class Config(BaseModel):
-    phases: List[ConfigPhase]
-    endings: List[ConfigEnding]
-    sfx: List[ConfigSfx]
+class ConfigSchema(BaseModel):
+    phases: List[ConfigPhaseSchema]
+    endings: List[ConfigEndingSchema]
+    sfx: List[ConfigSfxSchema]
     font: str

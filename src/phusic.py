@@ -1,186 +1,133 @@
-import json
-import pygame
 import argparse
-import sys
 import random
-from typing import List
-from config_cop import ConfigCop
-from dataobjects.config import Config
-from dataobjects.phase import Phase
-from dataobjects.ending import Ending
-from dataobjects.sfx import Sfx
-from linked_list import Node
+import sys
+import time
+
+import pygame
+
 import util as util
-from constants import KEYBIND_FULLSCREEN, PATH_CONTROLS
+from config_parser import ConfigParser
+from constants import KEYBIND_FULLSCREEN
+from dataobjects.config import ConfigSchema
+from linked_list import Node
 
 
 class Game:
+    FPS = 20
+
+    # Transition
     TOTAL_FADE_STEPS = 255
-    TRANSITION_DURATION = 5
-    FPS = 60
-    WINDOWED_SIZE = (1280, 720)
-    FULLSCREEN_SIZE = (1920, 1080)
+    TRANSITION_DURATION_SECONDS = 5
+    FADE_STEPS = TOTAL_FADE_STEPS / float(TRANSITION_DURATION_SECONDS * FPS)
+
+    # Drawing
     FONT_SIZE = 42
     FONT_COLOR = (255, 255, 255)
+    INITIAL_WINDOW_SIZE = (1280, 720)
+    LOGICAL_SIZE = (2560, 1440)
+    logical_surface = pygame.Surface(LOGICAL_SIZE)
 
-    def __init__(self, config: Config):
+    # State
+    running = True
+    fade_step = 0
+    is_fading = False
+    is_fullscreen = True
+
+    def __init__(self, config: ConfigSchema):
         pygame.font.init()
+        pygame.mixer.pre_init(44100, -16, 1, 512)
         pygame.mixer.init()
 
-        # Window
-        self.window_size = self.FULLSCREEN_SIZE
-        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        self.__screen = pygame.display.set_mode(
+            self.INITIAL_WINDOW_SIZE, pygame.RESIZABLE
+        )
         self.font = pygame.font.Font(config.font, self.FONT_SIZE)
         pygame.display.set_caption("Phusic")
 
-        # Load stuff
-        self.phases = self._get_phases(config)
-        self.endings = self._get_endings(config)
-        self.sfx = self._get_sfx(config)
+    def run(self) -> None:
+        clock = pygame.time.Clock()
 
-        # Setup state
-        self.fade_step = 0
-        self.is_fading = False
-        self.is_fullscreen = True
+        parser = ConfigParser()
+        parser.load_assets(config)
+
+        fake_progress = 0
+        while parser.status()["loading"]:
+            load = parser.status()["latest_load"]
+            fake_progress += 0.02
+            self._draw_loading_screen(f"Loading: {load}", fake_progress % 1)
+            self._render()
+            time.sleep(0.01)
+
+        res = parser.get_assets()
+        self.phases = res["phases"]
+        self.endings = res["endings"]
+        self.sfx = res["sfx"]
 
         self.linked_list = util.create_linked_list(self.phases)
         self.curr_phase = self.linked_list.head
         self.next_phase = Node(None)
 
-        self.frames_for_transition = self.TRANSITION_DURATION * self.FPS
-        self.fade_step_increment = self.TOTAL_FADE_STEPS / float(
-            self.frames_for_transition
-        )
-
-    def run(self):
-        clock = pygame.time.Clock()
-        running = True
         self._initial_phase()
 
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == getattr(pygame, KEYBIND_FULLSCREEN):
-                        self._toggle_fullscreen()
-
-                    if event.key == pygame.K_LEFT:
-                        self._change_phase(self.curr_phase.prev)
-
-                    if event.key == pygame.K_RIGHT or event.key == pygame.K_SPACE:
-                        self._change_phase(self.curr_phase.next)
-
-                    if pygame.key.get_mods() & pygame.KMOD_CTRL:
-                        if event.key == pygame.K_LEFT:
-                            self._set_phase(self.curr_phase.prev)
-                        elif event.key == pygame.K_RIGHT:
-                            self._set_phase(self.curr_phase.next)
-                        elif event.key == pygame.K_c:
-                            print("Shutting down")
-                            exit(0)
-
-                    for ending in self.endings:
-                        if event.key == ending.key:
-                            ending_node = Node(ending)
-                            self._change_phase(ending_node)
-
-                    for sfx in self.sfx:
-                        if event.key == sfx.key:
-                            sfx.sound.play()
-
-            self._draw()
+        # Main loop
+        while self.running:
+            self._handle_events()
+            self._draw_phase()
+            self._render()
             clock.tick(self.FPS)
 
         pygame.quit()
         sys.exit()
 
-    def _get_phases(self, config: Config) -> list[Phase]:
-        self._draw_loading_screen("Loading phase assets...", 0)
+    def _handle_events(self) -> None:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
 
-        phases = []
-        total_phases = len(config.phases)
+            elif event.type == pygame.KEYDOWN:
+                if event.key == getattr(pygame, KEYBIND_FULLSCREEN):
+                    self._toggle_fullscreen()
 
-        for i, phase in enumerate(config.phases):
-            phase_instances = []
+                if event.key == pygame.K_LEFT:
+                    self._change_phase(self.curr_phase.prev)
 
-            audio_paths = util.get_files_from_path(phase.audio)
-            img_paths = util.get_files_from_path(phase.imgs)
+                if event.key == pygame.K_RIGHT or event.key == pygame.K_SPACE:
+                    self._change_phase(self.curr_phase.next)
 
-            for img in img_paths:
-                # Grab images sequentially, but grab audio randomly
-                audio = random.choice(audio_paths)
-                phase_instances.append(Phase(phase.name, audio, img))
+                if pygame.key.get_mods() & pygame.KMOD_CTRL:
+                    if event.key == pygame.K_LEFT:
+                        self._set_phase(self.curr_phase.prev)
+                    elif event.key == pygame.K_RIGHT:
+                        self._set_phase(self.curr_phase.next)
+                    elif event.key == pygame.K_c:
+                        exit(0)
 
-            phases.append(phase_instances)
+                for ending in self.endings:
+                    if event.key == ending.key:
+                        ending_node = Node(ending)
+                        self._change_phase(ending_node)
 
-            progress = (i + 1) / total_phases
-            self._draw_loading_screen("Loading phase assets...", progress)
+                for sfx in self.sfx:
+                    if event.key == sfx.key:
+                        sfx.sound.play()
 
-        # If there are more of one type of phase than the others, loop back
-        ordered_phases = []
-        max_length = max(len(p) for p in phases)
-
-        for i in range(max_length):
-            for phase in phases:
-                phase_index = i % len(phase)
-                ordered_phases.append(phase[phase_index])
-
-        return ordered_phases
-
-    def _get_endings(self, config: Config) -> List[Ending]:
-        self._draw_loading_screen("Loading ending assets...", 0)
-
-        endings = []
-        total_endings = len(config.endings)
-
-        for i, ending in enumerate(config.endings):
-            audio = random.choice(util.get_files_from_path(ending.audio))
-            imgs = random.choice(util.get_files_from_path(ending.img))
-            endings.append(
-                Ending(getattr(pygame, ending.key), ending.name, audio, imgs)
-            )
-
-            progress = (i + 1) / total_endings
-            self._draw_loading_screen("Loading ending assets...", progress)
-
-        return endings
-
-    def _get_sfx(self, config: Config) -> List[Sfx]:
-        self._draw_loading_screen("Loading SFX assets...", 0)
-
-        sfxs = []
-        total_sfxs = len(config.sfx)
-
-        for i, sfx in enumerate(config.sfx):
-            sfxs.append(Sfx(getattr(pygame, sfx.key), sfx.audio))
-
-            progress = (i + 1) / total_sfxs
-            self._draw_loading_screen("Loading SFX assets...", progress)
-
-        return sfxs
-
-    def _toggle_fullscreen(self):
+    def _toggle_fullscreen(self) -> None:
         self.is_fullscreen = not self.is_fullscreen
 
         if self.is_fullscreen:
-            self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+            self.__screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         else:
-            self.screen = pygame.display.set_mode(self.WINDOWED_SIZE)
+            self.__screen = pygame.display.set_mode(
+                self.INITIAL_WINDOW_SIZE, pygame.RESIZABLE
+            )
 
-        self.window_size = self.screen.get_size()
-        phase = self.curr_phase.value
-        # Re-load background image and scale
-        background = pygame.image.load(phase.img_path).convert()
-        phase.background = pygame.transform.scale(background, self.window_size)
-
-    def _initial_phase(self):
+    def _initial_phase(self) -> None:
         phase = self.curr_phase.value
         phase.sound.set_volume(1.0)
         phase.sound.play(-1)
-        phase.background = pygame.transform.scale(phase.background, self.window_size)
+        phase.background = pygame.transform.scale(phase.background, self.LOGICAL_SIZE)
 
-    def _change_phase(self, phase_node: Node):
+    def _change_phase(self, phase_node: Node) -> None:
         if self.is_fading:
             return
 
@@ -199,9 +146,9 @@ class Game:
         phase = phase_node.value
         phase.sound.set_volume(0.0)
         phase.sound.play(-1)
-        phase.background = pygame.transform.scale(phase.background, self.window_size)
+        phase.background = pygame.transform.scale(phase.background, self.LOGICAL_SIZE)
 
-    def _set_phase(self, phase_node: Node):
+    def _set_phase(self, phase_node: Node) -> None:
         """Update the current phase without fading"""
         if self.next_phase.value:
             self.next_phase.value.sound.stop()
@@ -212,11 +159,11 @@ class Game:
         phase = phase_node.value
         phase.sound.set_volume(1.0)
         phase.sound.play(-1)
-        phase.background = pygame.transform.scale(phase.background, self.window_size)
+        phase.background = pygame.transform.scale(phase.background, self.LOGICAL_SIZE)
 
         self.curr_phase = phase_node
 
-    def _draw(self):
+    def _draw_phase(self) -> None:
         curr_phase = self.curr_phase.value
         next_phase = self.next_phase.value
 
@@ -224,38 +171,38 @@ class Game:
             # Handle fade background
             alpha = int(self.fade_step * (255 / self.TOTAL_FADE_STEPS))
             next_phase.background.set_alpha(alpha)
-            self.screen.blit(curr_phase.background, (0, 0))
-            self.screen.blit(next_phase.background, (0, 0))
+            self.logical_surface.blit(curr_phase.background, (0, 0))
+            self.logical_surface.blit(next_phase.background, (0, 0))
 
             # Handle fade sound
             new_volume = alpha / 255.0
             next_phase.sound.set_volume(new_volume)
             curr_phase.sound.set_volume(1.0 - new_volume)
 
-            self.fade_step += self.fade_step_increment
+            self.fade_step += self.FADE_STEPS
 
             if self.fade_step > self.TOTAL_FADE_STEPS:
                 self.is_fading = False
                 curr_phase.sound.stop()
                 self.curr_phase = self.next_phase
         else:
-            self.screen.blit(curr_phase.background, (0, 0))
+            self.logical_surface.blit(curr_phase.background, (0, 0))
 
             # Draw phase name
-            phase_position = (20, self.window_size[1] - 10 - self.FONT_SIZE)
+            phase_position = (20, self.LOGICAL_SIZE[1] - 10 - self.FONT_SIZE)
             self._draw_text_with_outline(curr_phase.name, phase_position)
 
         # Draw current time
         curr_time = util.get_local_time()
         time_position = (
-            self.window_size[0] - self.FONT_SIZE - 55,
-            self.window_size[1] - 10 - self.FONT_SIZE,
+            self.LOGICAL_SIZE[0] - self.FONT_SIZE - 55,
+            self.LOGICAL_SIZE[1] - 10 - self.FONT_SIZE,
         )
         self._draw_text_with_outline(curr_time, time_position)
 
         pygame.display.flip()
 
-    def _draw_text_with_outline(self, text, position, outline_width: int = 2):
+    def _draw_text_with_outline(self, text, position, outline_width: int = 2) -> None:
         x, y = position
 
         for dx, dy in [
@@ -265,20 +212,20 @@ class Game:
             if ow != 0 or oh != 0
         ]:
             text_surface = self.font.render(text, True, (0, 0, 0))
-            self.screen.blit(text_surface, (x + dx, y + dy))
+            self.logical_surface.blit(text_surface, (x + dx, y + dy))
 
         text_surface = self.font.render(text, True, self.FONT_COLOR)
-        self.screen.blit(text_surface, position)
+        self.logical_surface.blit(text_surface, position)
 
-    def _draw_loading_screen(self, text: str, progress: float):
-        self.screen.fill((0, 0, 0))
+    def _draw_loading_screen(self, text: str, progress: float) -> None:
+        self.logical_surface.fill((0, 0, 0))
 
         # Draw text
         text_surface = self.font.render(text, True, (255, 255, 255))
-        center_width = self.window_size[0] // 2
-        center_height = self.window_size[1] // 2
+        center_width = self.LOGICAL_SIZE[0] // 2
+        center_height = self.LOGICAL_SIZE[1] // 2
         text_rect = text_surface.get_rect(center=(center_width, center_height - 50))
-        self.screen.blit(text_surface, text_rect)
+        self.logical_surface.blit(text_surface, text_rect)
 
         # Draw progress bar
         progress_bar_width = 200
@@ -289,7 +236,7 @@ class Game:
 
         # Draw progress bar background
         pygame.draw.rect(
-            self.screen,
+            self.logical_surface,
             (255, 255, 255),
             (progress_bar_x, progress_bar_y, progress_bar_width, progress_bar_height),
             1,
@@ -297,11 +244,34 @@ class Game:
         # Fill the progress bar
         if progress_fill > 0:
             pygame.draw.rect(
-                self.screen,
+                self.logical_surface,
                 (255, 255, 255),
                 (progress_bar_x, progress_bar_y, progress_fill, progress_bar_height),
             )
 
+        self._render()
+
+    def _render(self) -> None:
+        window_size = pygame.display.get_surface().get_size()
+        logical_aspect_ratio = self.LOGICAL_SIZE[0] / self.LOGICAL_SIZE[1]
+        window_aspect_ratio = window_size[0] / window_size[1]
+
+        if logical_aspect_ratio > window_aspect_ratio:
+            new_width = window_size[0]
+            new_height = int(new_width / logical_aspect_ratio)
+        else:
+            new_height = window_size[1]
+            new_width = int(new_height * logical_aspect_ratio)
+
+        scaled_surface = pygame.transform.smoothscale(
+            self.logical_surface, (new_width, new_height)
+        )
+
+        x_position = (window_size[0] - new_width) // 2
+        y_position = (window_size[1] - new_height) // 2
+
+        self.__screen.fill((0, 0, 0))
+        self.__screen.blit(scaled_surface, (x_position, y_position))
         pygame.display.flip()
 
 
@@ -318,8 +288,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Validate configs
-    ConfigCop.assert_valid_configs()
-    config = ConfigCop.parse_config(args.config)
+    ConfigParser.assert_valid_configs()
+    config = ConfigParser.parse_schema(args.config)
 
     # Write controls
     util.generate_controls_file(config)

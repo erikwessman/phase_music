@@ -1,0 +1,10 @@
+scripts:
+  format:
+    - kool start # <- Will be slow, but reproduceability + convenvience > speed
+
+    - kool exec app pip install black
+    - kool exec app black .
+
+    - kool exec app pip install isort
+    - kool exec app isort .
+

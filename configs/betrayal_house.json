@@ -2,8 +2,8 @@
     "phases": [
         {
             "name": "Explore",
-            "imgs": "assets/betrayal_house/explore/images",
-            "audio": "assets/betrayal_house/explore/audio"
+            "imgs": "assets/betrayal_house/phases/explore/images",
+            "audio": "assets/betrayal_house/phases/explore/audio"
         }
     ],
     "endings": [],

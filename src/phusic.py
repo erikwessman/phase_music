@@ -1,5 +1,5 @@
 import argparse
-import random
+import math
 import sys
 import time
 
@@ -227,29 +227,25 @@ class Game:
         text_rect = text_surface.get_rect(center=(center_width, center_height - 50))
         self.logical_surface.blit(text_surface, text_rect)
 
-        # Draw progress bar
-        progress_bar_width = 200
-        progress_bar_height = 20
-        progress_bar_x = center_width - progress_bar_width // 2
-        progress_bar_y = center_height + 10
-        progress_fill = progress * progress_bar_width
+        circle_radius = 10
+        movement_width = 200
+        circle_x_start = center_width - movement_width // 2
+        circle_y = center_height + 10 + circle_radius
 
-        # Draw progress bar background
-        pygame.draw.rect(
+        progress_modulo = progress % 1.0
+        oscillation = math.sin(progress_modulo * math.pi * 2)
+        circle_x = (
+            circle_x_start
+            + (movement_width // 2)
+            + (oscillation * (movement_width // 2 - circle_radius))
+        )
+
+        pygame.draw.circle(
             self.logical_surface,
             (255, 255, 255),
-            (progress_bar_x, progress_bar_y, progress_bar_width, progress_bar_height),
-            1,
+            (int(circle_x), circle_y),
+            circle_radius,
         )
-        # Fill the progress bar
-        if progress_fill > 0:
-            pygame.draw.rect(
-                self.logical_surface,
-                (255, 255, 255),
-                (progress_bar_x, progress_bar_y, progress_fill, progress_bar_height),
-            )
-
-        self._render()
 
     def _render(self) -> None:
         window_size = pygame.display.get_surface().get_size()

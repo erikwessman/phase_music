@@ -1,0 +1,73 @@
+{
+    "phases": [
+        {
+            "name": "Explore",
+            "imgs": "assets/betrayal_house/phases/explore/images",
+            "audio": "assets/betrayal_house/phases/explore/audio"
+        },
+        {
+            "name": "Haunt Roll",
+            "imgs": "assets/betrayal_house/phases/haunt_roll/images",
+            "audio": "assets/betrayal_house/phases/haunt_roll/audio"
+        }
+    ],
+    "endings": [
+        {
+            "key": "K_o",
+            "name": "Setup",
+            "img": "assets/betrayal_house/setup/setup.webp" ,
+            "audio": "assets/betrayal_house/setup/hall_of_angels.mp3"
+        },
+        {
+            "key": "K_h",
+            "name": "Haunting",
+            "img": "assets/betrayal_house/phases/haunting/haunting.webp",
+            "audio": "assets/betrayal_house/phases/haunting/barovian_castle.mp3"
+        },
+        {
+            "key": "K_v",
+            "name": "Explorers Win",
+            "img": "assets/betrayal_house/endings/explorers/explorers_win.webp",
+            "audio": "assets/_common/soundtracks/dunk.mp3"
+        },
+        {
+            "key": "K_d",
+            "name": "Haunting Wins",
+            "img": "assets/betrayal_house/endings/haunting/haunting_wins.webp",
+            "audio": "assets/_common/soundtracks/dunk.mp3"
+        }
+    ],
+    "sfx": [
+        {
+            "name": "Evil Laugh",
+            "key": "K_1",
+            "audio": "assets/sfx/evil-laugh.mp3"
+        },
+        {
+            "name": "Thunder",
+            "key": "K_2",
+            "audio": "assets/sfx/thunder.mp3"
+        },
+        {
+            "name": "Haunt Roll",
+            "key": "K_3",
+            "audio": "assets/betrayal_house/sfx/haunt_roll.mp3"
+        },
+        {
+            "name": "Door",
+            "key": "K_4",
+            "audio": "assets/betrayal_house/sfx/door.mp3"
+        },
+        {
+            "name": "Wood Breaking",
+            "key": "K_5",
+            "audio": "assets/betrayal_house/sfx/wood_breaking.mp3"
+        },
+        {
+            "name": "Ghost Sigh",
+            "key": "K_6",
+            "audio": "assets/betrayal_house/sfx/ghost_sigh.mp3"
+        }
+    ],
+    "font": "assets/eldritch_horror/fonts/Ghoulish.ttf"
+}

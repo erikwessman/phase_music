@@ -44,7 +44,9 @@ class ConfigParser:
         }
 
     def _loading_complete(self) -> bool:
-        return all(asset is not None for asset in [self._phases, self._endings, self._sfxs])
+        return all(
+            asset is not None for asset in [self._phases, self._endings, self._sfxs]
+        )
 
     def _load_phases(self, config: ConfigSchema) -> None:
         phases = []

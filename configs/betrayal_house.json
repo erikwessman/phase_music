@@ -13,10 +13,16 @@
     ],
     "endings": [
         {
+            "key": "K_o",
+            "name": "Setup",
+            "img": "assets/betrayal_house/setup/setup.webp" ,
+            "audio": "assets/betrayal_house/setup/hall_of_angels.mp3"
+        },
+        {
             "key": "K_h",
             "name": "Haunting",
-            "img": "assets/betrayal_house/endings/explorers/explorers_win.webp",
-            "audio": "assets/betrayal_house/phases/haunt_roll/audio"
+            "img": "assets/betrayal_house/phases/haunting/haunting.webp",
+            "audio": "assets/betrayal_house/phases/haunting/barovian_castle.mp3"
         },
         {
             "key": "K_v",
@@ -27,7 +33,7 @@
         {
             "key": "K_d",
             "name": "Haunting Wins",
-            "img": "assets/betrayal_house/endings/explorers/explorers_win.webp",
+            "img": "assets/betrayal_house/endings/haunting/haunting_wins.webp",
             "audio": "assets/_common/soundtracks/dunk.mp3"
         }
     ],

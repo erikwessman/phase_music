@@ -33,3 +33,8 @@ Docker is **NOT** supported (at least not tested), is only used for kool.dev.
 But here are some fun kool commands:
 
 - `kool run format`
+
+### TODO
+
+- [ ] Common structure for files, and common files
+- [ ] Rename endings to something to reuse for other phases

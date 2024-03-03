@@ -1,4 +1,8 @@
 {
+    "metadata": {
+        "name": "Blood Rage",
+        "subdir": "blood_rage"
+    },
     "phases": [
         {
             "name": "Age 1",

@@ -285,10 +285,12 @@ if __name__ == "__main__":
 
     # Validate configs
     ConfigParser.assert_valid_configs()
-    config = ConfigParser.parse_schema(args.config)
+    ConfigParser.check_clashing_assets()
+    # raise ValueError("Invalid config files")
+    # config = ConfigParser.parse_schema(args.config)
 
-    # Write controls
-    util.generate_controls_file(config)
+    # # Write controls
+    # util.generate_controls_file(config)
 
-    game = Game(config)
-    game.run()
+    # game = Game(config)
+    # game.run()

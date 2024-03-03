@@ -1,7 +1,8 @@
 import json
+import os
+import pprint
 import random
 import threading
-from ast import Dict
 from typing import List, Optional
 
 import pygame
@@ -22,9 +23,17 @@ class ConfigParser:
     _endings: Optional[List[Ending]] = None
     _sfxs: Optional[List[Sfx]] = None
 
-    def load_assets(self, config: ConfigSchema) -> None:
+    _ASSETS_DIR = "assets"
+
+    def __init__(self, config: ConfigSchema) -> None:
+        if config is None:
+            raise ValueError("Config is required")
+
+        self._config = config
+
+    def load_assets(self) -> None:
         for method in [self._load_phases, self._load_endings, self._load_sfx]:
-            thread = threading.Thread(target=method, args=(config,))
+            thread = threading.Thread(target=method)
             thread.start()
 
     def get_assets(self) -> dict:
@@ -48,10 +57,10 @@ class ConfigParser:
             asset is not None for asset in [self._phases, self._endings, self._sfxs]
         )
 
-    def _load_phases(self, config: ConfigSchema) -> None:
+    def _load_phases(self) -> None:
         phases = []
 
-        for phase in config.phases:
+        for phase in self._config.phases:
             self._latest_load = phase.name
             phase_instances = []
 
@@ -75,10 +84,10 @@ class ConfigParser:
 
         self._phases = ordered_phases
 
-    def _load_endings(self, config: ConfigSchema) -> None:
+    def _load_endings(self) -> None:
         endings = []
 
-        for ending in config.endings:
+        for ending in self._config.endings:
             self._latest_load = ending.name
             audio = random.choice(get_files_from_path(ending.audio))
             imgs = random.choice(get_files_from_path(ending.img))
@@ -88,14 +97,27 @@ class ConfigParser:
 
         self._endings = endings
 
-    def _load_sfx(self, config: ConfigSchema) -> None:
+    def _load_sfx(self) -> None:
         sfxs = []
 
-        for sfx in config.sfx:
+        for sfx in self._config.sfx:
             self._latest_load
             sfxs.append(Sfx(getattr(pygame, sfx.key), sfx.audio))
 
         self._sfxs = sfxs
+
+    def to_path(self, asset: str) -> dict:
+        path = f"{self._ASSETS_DIR}/{self._config.metadata.subdir}"
+
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"Path {path} does not exist")
+
+        config_specific_assets = get_files_from_path(path, recursive=True)
+
+        all_files = get_files_from_path(config_path)
+
+        pass
+
 
     @staticmethod
     def parse_schema(path: str) -> ConfigSchema:
@@ -119,3 +141,28 @@ class ConfigParser:
 
         if error:
             raise ValidationError("Invalid config files")
+
+    @staticmethod
+    def check_clashing_assets() -> None:
+        files = get_files_from_path(ConfigParser._ASSETS_DIR, recursive=True)
+        
+        pprint.pprint(files)
+        
+        found_files = []
+        error = False
+        clashes = []
+        
+        for path in files:
+            filename = os.path.basename(path)
+            if filename in found_files:
+                print(generate_title_str(f"Clashing file name: {filename}"))
+                error = True
+                clashes.append(path)
+
+            found_files.append(filename)
+
+        print(generate_title_str("Clashing files"))
+        pprint.pprint(clashes)
+
+        if error:
+            raise ValueError("Clashing file names")

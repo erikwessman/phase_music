@@ -1,4 +1,8 @@
 {
+    "metadata": {
+        "name": "Eldritch Horror",
+        "subdir": "eldritch_horror"
+    },
     "phases": [
         {
             "name": "Action",

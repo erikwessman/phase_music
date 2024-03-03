@@ -22,7 +22,13 @@ class ConfigSfxSchema(BaseModel):
     audio: str
 
 
+class ConfigMetadataSchema(BaseModel):
+    name: str
+    subdir: str
+
+
 class ConfigSchema(BaseModel):
+    metadata: ConfigMetadataSchema
     phases: List[ConfigPhaseSchema]
     endings: List[ConfigEndingSchema]
     sfx: List[ConfigSfxSchema]

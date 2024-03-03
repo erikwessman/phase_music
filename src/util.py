@@ -10,20 +10,32 @@ from dataobjects.phase import Phase
 from linked_list import CircularDoublyLinkedList
 
 
-def get_files_from_path(path: str, extension=None) -> List[str]:
+def get_files_from_path(path: str, extension=None, recursive=False) -> List[str]:
+    """
+    Retrieves a list of file paths from the given directory path, with an option to search recursively.
+    If the path is a file, returns a list with that file.
+
+    Args:
+        path (str): The directory path or file path to search.
+        extension (str, optional): The file extension to filter the results by. If None, all files are included. Defaults to None.
+        recursive (bool, optional): Whether to search directories recursively. Defaults to False.
+
+    Returns:
+        List[str]: A sorted list of file paths meeting the criteria.
+    """
     if os.path.isfile(path):
-        return [path]
+        return [path] if extension is None or path.endswith(extension) else []
 
-    full_paths = []
-    for entry in os.listdir(path):
-        if extension and not entry.endswith(extension):
-            continue
+    files = []
+    for entry in os.scandir(path):
+        full_path = entry.path
+        if entry.is_dir() and recursive:
+            files.extend(get_files_from_path(full_path, extension, recursive))
+        elif entry.is_file():
+            if extension is None or entry.name.endswith(extension):
+                files.append(full_path)
 
-        full_path = os.path.join(path, entry)
-        if os.path.isfile(full_path):
-            full_paths.append(full_path)
-
-    return sorted(full_paths)
+    return sorted(files)
 
 
 def create_linked_list(phases: List[Phase]) -> CircularDoublyLinkedList:

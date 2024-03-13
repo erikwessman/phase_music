@@ -53,10 +53,11 @@ def get_local_time():
     return time_as_string
 
 
-def generate_title_str(title: str) -> str:
+def generate_title_str(title: str, indent_index: int = 0) -> str:
+    indent = " " * indent_index * 4
     char = "."
     border = char * (len(title) + 4)
-    return f"\n{border}\n{char} {title} {char}\n{border}\n"
+    return f"\n{indent}{border}\n{indent}{char} {title} {char}\n{indent}{border}\n"
 
 
 def readable_keycode(key: str) -> str:
@@ -95,3 +96,7 @@ def generate_controls_file(config: ConfigSchema) -> str:
         ]
         f.write(generate_title_str("Endings") + "\n\n")
         f.write(tabulate(endings, headers, tablefmt) + "\n\n")
+
+
+def none_or_whitespace(f):
+    return f is None or f.isspace()

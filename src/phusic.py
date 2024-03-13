@@ -285,7 +285,8 @@ if __name__ == "__main__":
 
     # Validate configs
     ConfigParser.assert_valid_configs()
-    ConfigParser.check_clashing_assets()
+    ConfigParser.assert_non_clashing_assets()
+    ConfigParser.assert_valid_names()
     # raise ValueError("Invalid config files")
     # config = ConfigParser.parse_schema(args.config)
 

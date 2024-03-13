@@ -1,9 +1,10 @@
 import json
 import os
-import pprint
+from pprint import pprint
 import random
 import threading
 from typing import List, Optional
+import re
 
 import pygame
 from pydantic import ValidationError
@@ -13,7 +14,7 @@ from dataobjects.config import ConfigSchema
 from dataobjects.ending import Ending
 from dataobjects.phase import Phase
 from dataobjects.sfx import Sfx
-from util import generate_title_str, get_files_from_path
+from util import generate_title_str, get_files_from_path, none_or_whitespace
 
 
 class ConfigParser:
@@ -118,7 +119,6 @@ class ConfigParser:
 
         pass
 
-
     @staticmethod
     def parse_schema(path: str) -> ConfigSchema:
         with open(path) as f:
@@ -143,26 +143,53 @@ class ConfigParser:
             raise ValidationError("Invalid config files")
 
     @staticmethod
-    def check_clashing_assets() -> None:
+    def assert_valid_names() -> None:
         files = get_files_from_path(ConfigParser._ASSETS_DIR, recursive=True)
-        
-        pprint.pprint(files)
-        
+
+        error = False
+        for f in files:
+            filename = os.path.basename(f)
+
+            if none_or_whitespace(f) or not re.match(r"^[a-z0-9_.]*$", filename):
+                print(generate_title_str(f"❗ Invalid file name: {f}", 1))
+                error = True
+
+        if error:
+            raise ValueError("Invalid file name(s)")
+
+    @staticmethod
+    def assert_non_clashing_assets() -> None:
+        """
+        Every direct folder in the assets directory should have unique file
+        names. May overlap between the directories, but not recursively
+        within the same directory.
+        """
+
+        for directory in os.listdir(ConfigParser._ASSETS_DIR):
+            directory_path = os.path.join(ConfigParser._ASSETS_DIR, directory)
+
+            if os.path.isdir(directory_path):
+                ConfigParser._assert_no_duplicates(directory_path)
+
+    @staticmethod
+    def _assert_no_duplicates(directory: str) -> None:
+        print(directory)
+        files = get_files_from_path(directory, recursive=True)
+
         found_files = []
         error = False
         clashes = []
-        
+
         for path in files:
             filename = os.path.basename(path)
             if filename in found_files:
-                print(generate_title_str(f"Clashing file name: {filename}"))
+                print(generate_title_str(f"❗ Clashing file name: {filename}", 1))
                 error = True
                 clashes.append(path)
 
             found_files.append(filename)
 
-        print(generate_title_str("Clashing files"))
-        pprint.pprint(clashes)
-
         if error:
+            print(generate_title_str("🚨 Clashing files! Exiting 🚨"))
+            pprint(clashes)
             raise ValueError("Clashing file names")

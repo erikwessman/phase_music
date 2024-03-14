@@ -10,7 +10,7 @@ import pygame
 from pydantic import ValidationError
 
 from constants import PATH_CONFIGS
-from dataobjects.config import ConfigSchema
+from src.dataobjects.config_schema import ConfigSchema
 from dataobjects.ending import Ending
 from dataobjects.phase import Phase
 from dataobjects.sfx import Sfx

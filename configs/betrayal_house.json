@@ -7,19 +7,24 @@
         {
             "name": "Explore",
             "imgs": "explore/",
-            "audio": "adventure/"
+            "audios": [
+                "steampunk_station.mp3",
+                "magic_shoppe.mp3"
+            ]
         },
         {
             "name": "Haunt Roll",
             "imgs": "haunt_roll/",
-            "audio": "intense/"
+            "audios": [
+                "circus.mp3"
+            ]
         }
     ],
     "endings": [
         {
             "key": "K_o",
             "name": "Setup",
-            "img": "setup.webp" ,
+            "img": "setup.webp",
             "audio": "hall_of_angels.mp3"
         },
         {

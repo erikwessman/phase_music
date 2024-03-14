@@ -6,13 +6,13 @@
     "phases": [
         {
             "name": "Explore",
-            "imgs": "phases/explore/",
-            "audio": "phases/explore/"
+            "imgs": "explore/",
+            "audio": "adventure/"
         },
         {
             "name": "Haunt Roll",
-            "imgs": "phases/haunt_roll/",
-            "audio": "docking_bay.mp3"
+            "imgs": "haunt_roll/",
+            "audio": "intense/"
         }
     ],
     "endings": [
@@ -37,7 +37,7 @@
         {
             "key": "K_d",
             "name": "Haunting Wins",
-            "img": "haunting_wins.webp",
+            "img": "haunting_win.webp",
             "audio": "dunk.mp3"
         }
     ],
@@ -55,7 +55,7 @@
         {
             "name": "Haunt Roll",
             "key": "K_3",
-            "audio": "haunt_roll.mp3"
+            "audio": "magic_impact.mp3"
         },
         {
             "name": "Door",

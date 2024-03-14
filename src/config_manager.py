@@ -38,15 +38,14 @@ class ConfigManager:
             thread = threading.Thread(target=method)
             thread.start()
 
+    def get_font(self) -> str:
+        return self.asset_to_path(self._config, self._config.font)
+
     def get_assets(self) -> dict:
         if not self._loading_complete():
             raise ValueError("Assets not loaded, use load_assets() first")
 
-        return {
-            "phases": self._phases,
-            "endings": self._endings,
-            "sfx": self._sfxs,
-        }
+        return {"phases": self._phases, "endings": self._endings, "sfx": self._sfxs}
 
     def status(self) -> dict:
         return {
@@ -66,8 +65,8 @@ class ConfigManager:
             self._latest_load = phase.name
             phase_instances = []
 
-            audio_paths = get_files_from_path(phase.audio)
-            img_paths = get_files_from_path(phase.imgs)
+            audio_paths = self._get_files_from_asset(phase.audio)
+            img_paths = self._get_files_from_asset(phase.imgs)
 
             for img in img_paths:
                 audio = random.choice(audio_paths)
@@ -91,8 +90,8 @@ class ConfigManager:
 
         for ending in self._config.endings:
             self._latest_load = ending.name
-            audio = random.choice(get_files_from_path(ending.audio))
-            imgs = random.choice(get_files_from_path(ending.img))
+            audio = random.choice(self._get_files_from_asset(ending.audio))
+            imgs = random.choice(self._get_files_from_asset(ending.img))
             endings.append(
                 Ending(getattr(pygame, ending.key), ending.name, audio, imgs)
             )
@@ -103,19 +102,23 @@ class ConfigManager:
         sfxs = []
 
         for sfx in self._config.sfx:
-            self._latest_load
-            sfxs.append(Sfx(getattr(pygame, sfx.key), sfx.audio))
+            fx_path = self.asset_to_path(self._config, sfx.audio)
+            sfxs.append(Sfx(getattr(pygame, sfx.key), fx_path))
 
         self._sfxs = sfxs
 
+    def _get_files_from_asset(self, asset: str) -> List[str]:
+        return get_files_from_path(self.asset_to_path(self._config, asset))
+
     @staticmethod
-    def asset_to_path(config: ConfigSchema, asset: str) -> None:
+    def asset_to_path(config: ConfigSchema, asset: str) -> str:
         """
         Convert an asset string to a path.
 
         Examples:
             - "woof.mp3"            -> "assets/sfx/woof.mp3".
             - "phases/woof_sounds/" -> "assets/phases/woof_sounds/".
+            - "idontexist"          -> FileNotFoundError.
         """
 
         path = os.path.join(ConfigManager._ASSETS_DIR, config.metadata.assets_dir)
@@ -129,12 +132,11 @@ class ConfigManager:
         )
 
         for f in assets + common_assets:
-            print("looking at file", f)
+            # Cross-platform compatibility, becuase Windows is 💩
+            cleaned_f = f.replace("\\", "/").rstrip("/")
+            cleaned_asset = asset.replace("\\", "/").rstrip("/")
 
-            if os.path.isfile(asset) and f.endswith(asset):
-                return f
-
-            if os.path.isdir(f) and f.endswith(asset):
+            if cleaned_f.endswith(cleaned_asset):
                 return f
 
         raise FileNotFoundError(f"Asset {asset} not found")

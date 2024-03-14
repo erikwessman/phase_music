@@ -14,6 +14,7 @@ from linked_list import Node
 
 class Game:
     FPS = 20
+    cm: ConfigManager
 
     # Transition
     TOTAL_FADE_STEPS = 255
@@ -34,6 +35,7 @@ class Game:
     is_fullscreen = True
 
     def __init__(self, config: ConfigSchema):
+        self.cm = ConfigManager(config)
         pygame.font.init()
         pygame.mixer.pre_init(44100, -16, 1, 512)
         pygame.mixer.init()
@@ -41,24 +43,23 @@ class Game:
         self.__screen = pygame.display.set_mode(
             self.INITIAL_WINDOW_SIZE, pygame.RESIZABLE
         )
-        self.font = pygame.font.Font(config.font, self.FONT_SIZE)
+
+        self.font = pygame.font.Font(self.cm.get_font(), self.FONT_SIZE)
         pygame.display.set_caption("Phusic")
 
     def run(self) -> None:
         clock = pygame.time.Clock()
-
-        parser = ConfigManager()
-        parser.load_assets(config)
+        self.cm.load_assets()
 
         fake_progress = 0
-        while parser.status()["loading"]:
-            load = parser.status()["latest_load"]
+        while self.cm.status()["loading"]:
+            load = self.cm.status()["latest_load"]
             fake_progress += 0.02
             self._draw_loading_screen(f"Loading: {load}", fake_progress % 1)
             self._render()
             time.sleep(0.01)
 
-        res = parser.get_assets()
+        res = self.cm.get_assets()
         self.phases = res["phases"]
         self.endings = res["endings"]
         self.sfx = res["sfx"]
@@ -287,11 +288,11 @@ if __name__ == "__main__":
     ConfigManager.assert_valid_configs()
     ConfigManager.assert_non_clashing_assets()
     ConfigManager.assert_valid_names()
-    # raise ValueError("Invalid config files")
-    # config = ConfigParser.parse_schema(args.config)
 
-    # # Write controls
-    # util.generate_controls_file(config)
+    config = ConfigManager.parse_schema(args.config)
 
-    # game = Game(config)
-    # game.run()
+    # Write controls
+    util.generate_controls_file(config)
+
+    game = Game(config)
+    game.run()

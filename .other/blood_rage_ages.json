@@ -1,38 +1,23 @@
 {
     "metadata": {
         "name": "Blood Rage",
-        "subdir": "blood_rage"
+        "assets_dir": "blood_rage"
     },
     "phases": [
         {
-            "name": "God's Gift",
+            "name": "Age 1",
             "imgs": "assets/blood_rage/gods_gift/images",
             "audio": "assets/blood_rage/gods_gift/audio"
         },
         {
-            "name": "Action",
+            "name": "Age 2",
             "imgs": "assets/blood_rage/action/images",
             "audio": "assets/blood_rage/action/audio"
         },
         {
-            "name": "Discard",
-            "imgs": "assets/blood_rage/discard/images",
-            "audio": "assets/blood_rage/discard/audio"
-        },
-        {
-            "name": "Quest",
-            "imgs": "assets/blood_rage/quest/images",
-            "audio": "assets/blood_rage/quest/audio"
-        },
-        {
-            "name": "Ragnarok",
+            "name": "Age 3",
             "imgs": "assets/blood_rage/ragnarok/images",
             "audio": "assets/blood_rage/ragnarok/audio"
-        },
-        {
-            "name": "Release Valhalla",
-            "imgs": "assets/blood_rage/release_valhalla/images",
-            "audio": "assets/blood_rage/release_valhalla/audio"
         }
     ],
     "endings": [
@@ -69,33 +54,33 @@
     ],
     "sfx": [
         {
-            "key": "K_1",
             "name": "Power Up",
+            "key": "K_1",
             "audio": "assets/sfx/power_up.mp3"
         },
         {
-            "key": "K_2",
             "name": "Horn",
+            "key": "K_2",
             "audio": "assets/sfx/horn.mp3"
         },
         {
-            "key": "K_3",
             "name": "Roar",
+            "key": "K_3",
             "audio": "assets/sfx/roar.mp3"
         },
         {
-            "key": "K_4",
             "name": "Angel",
+            "key": "K_4",
             "audio": "assets/sfx/angel.mp3"
         },
         {
-            "key": "K_5",
             "name": "Bell",
+            "key": "K_5",
             "audio": "assets/sfx/bell.mp3"
         },
         {
-            "key": "K_6",
             "name": "Crow",
+            "key": "K_6",
             "audio": "assets/sfx/crow.mp3"
         }
     ],

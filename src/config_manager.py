@@ -1,10 +1,10 @@
 import json
 import os
-from pprint import pprint
 import random
-import threading
-from typing import List, Optional
 import re
+import threading
+from pprint import pprint
+from typing import List, Optional
 
 import pygame
 from pydantic import ValidationError
@@ -17,7 +17,7 @@ from dataobjects.sfx import Sfx
 from util import generate_title_str, get_files_from_path, none_or_whitespace
 
 
-class ConfigParser:
+class ConfigManager:
     _latest_load: str = ""
 
     _phases: Optional[List[Phase]] = None
@@ -25,6 +25,7 @@ class ConfigParser:
     _sfxs: Optional[List[Sfx]] = None
 
     _ASSETS_DIR = "assets"
+    _ASSETS_COMMON = os.path.join(_ASSETS_DIR, "_common")
 
     def __init__(self, config: ConfigSchema) -> None:
         if config is None:
@@ -107,17 +108,36 @@ class ConfigParser:
 
         self._sfxs = sfxs
 
-    def to_path(self, asset: str) -> dict:
-        path = f"{self._ASSETS_DIR}/{self._config.metadata.subdir}"
+    @staticmethod
+    def asset_to_path(config: ConfigSchema, asset: str) -> None:
+        """
+        Convert an asset string to a path.
+
+        Examples:
+            - "woof.mp3"            -> "assets/sfx/woof.mp3".
+            - "phases/woof_sounds/" -> "assets/phases/woof_sounds/".
+        """
+
+        path = os.path.join(ConfigManager._ASSETS_DIR, config.metadata.assets_dir)
 
         if not os.path.exists(path):
             raise FileNotFoundError(f"Path {path} does not exist")
 
-        config_specific_assets = get_files_from_path(path, recursive=True)
+        assets = get_files_from_path(path, recursive=True, include_dirs=True)
+        common_assets = get_files_from_path(
+            ConfigManager._ASSETS_COMMON, recursive=True, include_dirs=True
+        )
 
-        all_files = get_files_from_path(config_path)
+        for f in assets + common_assets:
+            print("looking at file", f)
 
-        pass
+            if os.path.isfile(asset) and f.endswith(asset):
+                return f
+
+            if os.path.isdir(f) and f.endswith(asset):
+                return f
+
+        raise FileNotFoundError(f"Asset {asset} not found")
 
     @staticmethod
     def parse_schema(path: str) -> ConfigSchema:
@@ -133,7 +153,8 @@ class ConfigParser:
 
         for file in files:
             try:
-                ConfigParser.parse_schema(file)
+                config = ConfigManager.parse_schema(file)
+                ConfigManager.assert_files_exists(config)
             except ValidationError as e:
                 print(generate_title_str(f"Invalid config: {file}"))
                 print(e)
@@ -144,7 +165,7 @@ class ConfigParser:
 
     @staticmethod
     def assert_valid_names() -> None:
-        files = get_files_from_path(ConfigParser._ASSETS_DIR, recursive=True)
+        files = get_files_from_path(ConfigManager._ASSETS_DIR, recursive=True)
 
         error = False
         for f in files:
@@ -158,6 +179,21 @@ class ConfigParser:
             raise ValueError("Invalid file name(s)")
 
     @staticmethod
+    def assert_files_exists(config: ConfigSchema) -> None:
+        for phase in config.phases:
+            ConfigManager.asset_to_path(config, phase.imgs)
+            ConfigManager.asset_to_path(config, phase.audio)
+
+        for ending in config.endings:
+            ConfigManager.asset_to_path(config, ending.img)
+            ConfigManager.asset_to_path(config, ending.audio)
+
+        for sfx in config.sfx:
+            ConfigManager.asset_to_path(config, sfx.audio)
+
+        ConfigManager.asset_to_path(config, config.font)
+
+    @staticmethod
     def assert_non_clashing_assets() -> None:
         """
         Every direct folder in the assets directory should have unique file
@@ -165,15 +201,14 @@ class ConfigParser:
         within the same directory.
         """
 
-        for directory in os.listdir(ConfigParser._ASSETS_DIR):
-            directory_path = os.path.join(ConfigParser._ASSETS_DIR, directory)
+        for directory in os.listdir(ConfigManager._ASSETS_DIR):
+            directory_path = os.path.join(ConfigManager._ASSETS_DIR, directory)
 
             if os.path.isdir(directory_path):
-                ConfigParser._assert_no_duplicates(directory_path)
+                ConfigManager._assert_no_duplicates(directory_path)
 
     @staticmethod
     def _assert_no_duplicates(directory: str) -> None:
-        print(directory)
         files = get_files_from_path(directory, recursive=True)
 
         found_files = []

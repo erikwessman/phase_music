@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
 from typing import List
+import random
 
 from tabulate import tabulate
 
@@ -10,7 +11,12 @@ from dataobjects.phase import Phase
 from linked_list import CircularDoublyLinkedList
 
 
-def get_files_from_path(path: str, extension=None, recursive=False) -> List[str]:
+def get_files_from_path(
+    path: str,
+    extension: str = None,
+    recursive: bool = False,
+    include_dirs: bool = False,
+) -> List[str]:
     """
     Retrieves a list of file paths from the given directory path, with an option to search recursively.
     If the path is a file, returns a list with that file.
@@ -19,19 +25,34 @@ def get_files_from_path(path: str, extension=None, recursive=False) -> List[str]
         path (str): The directory path or file path to search.
         extension (str, optional): The file extension to filter the results by. If None, all files are included. Defaults to None.
         recursive (bool, optional): Whether to search directories recursively. Defaults to False.
+        include_dirs (bool, optional): Whether to include directories in the results. Defaults to False.
 
     Returns:
         List[str]: A sorted list of file paths meeting the criteria.
     """
+
+    # Base case: path is a file
     if os.path.isfile(path):
-        return [path] if extension is None or path.endswith(extension) else []
+        if extension is None or path.endswith(extension):
+            return [path]
+
+        return []
 
     files = []
     for entry in os.scandir(path):
         full_path = entry.path
+
+        # Recursive case: path is a directory
         if entry.is_dir() and recursive:
-            files.extend(get_files_from_path(full_path, extension, recursive))
-        elif entry.is_file():
+            files.extend(
+                get_files_from_path(full_path, extension, recursive, include_dirs)
+            )
+
+            if include_dirs:
+                files.append(full_path)
+
+        # Base case: path is a file
+        if entry.is_file():
             if extension is None or entry.name.endswith(extension):
                 files.append(full_path)
 
@@ -57,7 +78,12 @@ def generate_title_str(title: str, indent_index: int = 0) -> str:
     indent = " " * indent_index * 4
     char = "."
     border = char * (len(title) + 4)
-    return f"\n{indent}{border}\n{indent}{char} {title} {char}\n{indent}{border}\n"
+
+    s = f"\n{indent}{border}\n"
+    s += f"{indent}{char} {title} {char}\n"
+    s += f"{indent}{border}\n"
+
+    return s
 
 
 def readable_keycode(key: str) -> str:

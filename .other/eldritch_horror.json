@@ -1,7 +1,7 @@
 {
     "metadata": {
         "name": "Eldritch Horror",
-        "subdir": "eldritch_horror"
+        "assets_dir": "eldritch_horror"
     },
     "phases": [
         {

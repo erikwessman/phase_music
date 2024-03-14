@@ -6,7 +6,7 @@ import time
 import pygame
 
 import util as util
-from config_parser import ConfigParser
+from config_manager import ConfigManager
 from constants import KEYBIND_FULLSCREEN
 from dataobjects.config import ConfigSchema
 from linked_list import Node
@@ -47,7 +47,7 @@ class Game:
     def run(self) -> None:
         clock = pygame.time.Clock()
 
-        parser = ConfigParser()
+        parser = ConfigManager()
         parser.load_assets(config)
 
         fake_progress = 0
@@ -284,9 +284,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Validate configs
-    ConfigParser.assert_valid_configs()
-    ConfigParser.assert_non_clashing_assets()
-    ConfigParser.assert_valid_names()
+    ConfigManager.assert_valid_configs()
+    ConfigManager.assert_non_clashing_assets()
+    ConfigManager.assert_valid_names()
     # raise ValueError("Invalid config files")
     # config = ConfigParser.parse_schema(args.config)
 

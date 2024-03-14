@@ -1,7 +1,7 @@
 {
     "metadata": {
         "name": "Betrayal at House on the Hill",
-        "subdir": "betrayal_house"
+        "assets_dir": "betrayal_house"
     },
     "phases": [
         {

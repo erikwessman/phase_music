@@ -24,7 +24,7 @@ class ConfigSfxSchema(BaseModel):
 
 class ConfigMetadataSchema(BaseModel):
     name: str
-    subdir: str
+    assets_dir: str
 
 
 class ConfigSchema(BaseModel):

@@ -1,7 +1,6 @@
 import os
 from datetime import datetime
 from typing import List
-import random
 
 from tabulate import tabulate
 

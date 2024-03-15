@@ -14,20 +14,14 @@ class PhaseSchema(BaseModel):
 class EndingSchema(BaseModel):
     key: str
     name: str
-
     img: str
-    """Single image file"""
-
     audio: str
-    """Single audio file"""
 
 
 class SfxSchema(BaseModel):
     name: str
     key: str
-
     audio: str
-    """Single audio file"""
 
 
 class MetadataSchema(BaseModel):

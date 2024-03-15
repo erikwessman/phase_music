@@ -1,0 +1,69 @@
+{
+    "metadata": {
+        "name": "Eldritch Horror",
+        "assets_dir": "eldritch_horror"
+    },
+    "phases": [
+        {
+            "name": "Action",
+            "img": "action/",
+            "soundtracks": [
+                "magic_shoppe.mp3",
+                "steampunk_station.mp3"
+            ]
+        },
+        {
+            "name": "Encounter",
+            "img": "encounter/",
+            "soundtracks": [
+                "goblin_ambush.mp3",
+                "hellhound_alley.mp3"
+            ]
+        },
+        {
+            "name": "Mythos",
+            "img": "mythos/",
+            "soundtracks": [
+                "escape_from_shadow.mp3",
+                "terror_in_the_woods.mp3"
+            ]
+        }
+    ],
+    "endings": [
+        {
+            "key": "K_v",
+            "name": "Victory",
+            "img": "victory.webp",
+            "audio": "homecoming.mp3"
+        },
+        {
+            "key": "K_d",
+            "name": "Defeat",
+            "img": "defeat.webp",
+            "audio": "lord_of_bones.mp3"
+        }
+    ],
+    "sfx": [
+        {
+            "name": "Evil Laugh",
+            "key": "K_1",
+            "audio": "evil_laugh.mp3"
+        },
+        {
+            "name": "Thunder",
+            "key": "K_2",
+            "audio": "thunder.mp3"
+        },
+        {
+            "name": "Morning",
+            "key": "K_3",
+            "audio": "morning.mp3"
+        },
+        {
+            "name": "Power Up",
+            "key": "K_4",
+            "audio": "power_up.mp3"
+        }
+    ],
+    "font": "ghoulish.ttf"
+}

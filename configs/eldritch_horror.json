@@ -1,56 +1,69 @@
 {
+    "metadata": {
+        "name": "Eldritch Horror",
+        "assets_dir": "eldritch_horror"
+    },
     "phases": [
         {
             "name": "Action",
-            "imgs": "assets/eldritch_horror/action/images",
-            "audio": "assets/eldritch_horror/action/audio"
+            "img": "action/",
+            "soundtracks": [
+                "magic_shoppe.mp3",
+                "steampunk_station.mp3"
+            ]
         },
         {
             "name": "Encounter",
-            "imgs": "assets/eldritch_horror/encounter/images",
-            "audio": "assets/eldritch_horror/encounter/audio"
+            "img": "encounter/",
+            "soundtracks": [
+                "goblin_ambush.mp3",
+                "hellhound_alley.mp3"
+            ]
         },
         {
             "name": "Mythos",
-            "imgs": "assets/eldritch_horror/mythos/images",
-            "audio": "assets/eldritch_horror/mythos/audio"
+            "img": "mythos/",
+            "soundtracks": [
+                "escape_from_shadow.mp3",
+                "terror_in_the_woods.mp3"
+            ]
         }
     ],
     "endings": [
         {
             "key": "K_v",
             "name": "Victory",
-            "img": "assets/eldritch_horror/victory/images",
-            "audio": "assets/eldritch_horror/victory/audio"
+            "img": "victory.webp",
+            "audio": "homecoming.mp3"
         },
         {
             "key": "K_d",
             "name": "Defeat",
-            "img": "assets/eldritch_horror/defeat/images",
-            "audio": "assets/eldritch_horror/defeat/audio"
+            "img": "defeat.webp",
+            "audio": "lord_of_bones.mp3"
         }
     ],
     "sfx": [
         {
             "name": "Evil Laugh",
             "key": "K_1",
-            "audio": "assets/sfx/evil-laugh.mp3"
+            "audio": "evil_laugh.mp3"
         },
         {
             "name": "Thunder",
             "key": "K_2",
-            "audio": "assets/sfx/thunder.mp3"
+            "audio": "thunder.mp3"
         },
         {
             "name": "Morning",
             "key": "K_3",
-            "audio": "assets/sfx/morning.mp3"
+            "audio": "morning.mp3"
         },
         {
             "name": "Power Up",
             "key": "K_4",
-            "audio": "assets/sfx/power_up.mp3"
+            "audio": "power_up.mp3"
         }
     ],
-    "font": "assets/eldritch_horror/fonts/Ghoulish.ttf"
+    "font": "ghoulish.ttf"
 }

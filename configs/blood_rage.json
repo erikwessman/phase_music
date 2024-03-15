@@ -1,99 +1,115 @@
 {
+    "metadata": {
+        "name": "Blood Rage",
+        "assets_dir": "blood_rage"
+    },
     "phases": [
         {
             "name": "God's Gift",
-            "imgs": "assets/blood_rage/gods_gift/images",
-            "audio": "assets/blood_rage/gods_gift/audio"
+            "img": "gods_gift/",
+            "soundtracks": [
+                "elven_glade.mp3"
+            ]
         },
         {
             "name": "Action",
-            "imgs": "assets/blood_rage/action/images",
-            "audio": "assets/blood_rage/action/audio"
+            "img": "action/",
+            "soundtracks": [
+                "skirmish.mp3"
+            ]
         },
         {
             "name": "Discard",
-            "imgs": "assets/blood_rage/discard/images",
-            "audio": "assets/blood_rage/discard/audio"
+            "img": "discard/",
+            "soundtracks": [
+                "weirder_things_2.mp3"
+            ]
         },
         {
             "name": "Quest",
-            "imgs": "assets/blood_rage/quest/images",
-            "audio": "assets/blood_rage/quest/audio"
+            "img": "quest/",
+            "soundtracks": [
+                "den_of_liniquity.mp3"
+            ]
         },
         {
             "name": "Ragnarok",
-            "imgs": "assets/blood_rage/ragnarok/images",
-            "audio": "assets/blood_rage/ragnarok/audio"
+            "img": "ragnarok/",
+            "soundtracks": [
+                "unto_the_breach.mp3"
+            ]
         },
         {
             "name": "Release Valhalla",
-            "imgs": "assets/blood_rage/release_valhalla/images",
-            "audio": "assets/blood_rage/release_valhalla/audio"
+            "img": "release_valhalla/",
+            "soundtracks": [
+                "village_of_the_damned.mp3"
+            ]
         }
     ],
     "endings": [
         {
             "key": "K_r",
             "name": "Raven",
-            "img": "assets/blood_rage/raven/images",
-            "audio": "assets/blood_rage/dunk.mp3"
+            "img": "raven.webp",
+            "audio": "dunk.mp3"
         },
         {
             "key": "K_b",
             "name": "Bear",
-            "img": "assets/blood_rage/bear/images",
-            "audio": "assets/blood_rage/dunk.mp3"
+            "img": "bear.webp",
+            "audio": "dunk.mp3"
         },
         {
             "key": "K_s",
             "name": "Serpent",
-            "img": "assets/blood_rage/serpent/images",
-            "audio": "assets/blood_rage/dunk.mp3"
+            "img": "serpent.webp",
+            "audio": "dunk.mp3"
         },
         {
             "key": "K_w",
             "name": "Wolf",
-            "img": "assets/blood_rage/wolf/images",
-            "audio": "assets/blood_rage/dunk.mp3"
+            "img": "wolf.webp",
+            "audio": "dunk.mp3"
         },
         {
             "key": "K_m",
             "name": "Ram",
-            "img": "assets/blood_rage/ram/images",
-            "audio": "assets/blood_rage/dunk.mp3"
+            "img": "ram.webp",
+            "audio": "dunk.mp3"
         }
     ],
     "sfx": [
         {
             "key": "K_1",
             "name": "Power Up",
-            "audio": "assets/sfx/power_up.mp3"
+            "audio": "power_up.mp3"
         },
         {
             "key": "K_2",
             "name": "Horn",
-            "audio": "assets/sfx/horn.mp3"
+            "audio": "horn.mp3"
         },
         {
             "key": "K_3",
             "name": "Roar",
-            "audio": "assets/sfx/roar.mp3"
+            "audio": "roar.mp3"
         },
         {
             "key": "K_4",
             "name": "Angel",
-            "audio": "assets/sfx/angel.mp3"
+            "audio": "angel.mp3"
         },
         {
             "key": "K_5",
             "name": "Bell",
-            "audio": "assets/sfx/bell.mp3"
+            "audio": "bell.mp3"
         },
         {
             "key": "K_6",
             "name": "Crow",
-            "audio": "assets/sfx/crow.mp3"
+            "audio": "crow.mp3"
         }
     ],
-    "font": "assets/blood_rage/fonts/Norse.otf"
+    "font": "norse.otf"
 }

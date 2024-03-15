@@ -36,5 +36,5 @@ But here are some fun kool commands:
 
 ### TODO
 
-- [ ] Common structure for files, and common files
+- [x] Common structure for files, and common files
 - [ ] Rename endings to something to reuse for other phases

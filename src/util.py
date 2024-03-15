@@ -5,25 +5,57 @@ from typing import List
 from tabulate import tabulate
 
 from constants import KEYBIND_FULLSCREEN, PATH_CONTROLS
-from dataobjects.config import ConfigSchema
+from dataobjects.config_schema import ConfigSchema
 from dataobjects.phase import Phase
 from linked_list import CircularDoublyLinkedList
 
 
-def get_files_from_path(path: str, extension=None) -> List[str]:
+def get_files_from_path(
+    path: str,
+    extension: str = None,
+    recursive: bool = False,
+    include_dirs: bool = False,
+) -> List[str]:
+    """
+    Retrieves a list of file paths from the given directory path, with an option to search recursively.
+    If the path is a file, returns a list with that file.
+
+    Args:
+        path (str): The directory path or file path to search.
+        extension (str, optional): The file extension to filter the results by. If None, all files are included. Defaults to None.
+        recursive (bool, optional): Whether to search directories recursively. Defaults to False.
+        include_dirs (bool, optional): Whether to include directories in the results. Defaults to False.
+
+    Returns:
+        List[str]: A sorted list of file paths meeting the criteria.
+    """
+
+    # Base case: path is a file
     if os.path.isfile(path):
-        return [path]
+        if extension is None or path.endswith(extension):
+            return [path]
 
-    full_paths = []
-    for entry in os.listdir(path):
-        if extension and not entry.endswith(extension):
-            continue
+        return []
 
-        full_path = os.path.join(path, entry)
-        if os.path.isfile(full_path):
-            full_paths.append(full_path)
+    files = []
+    for entry in os.scandir(path):
+        full_path = entry.path
 
-    return sorted(full_paths)
+        # Recursive case: path is a directory
+        if entry.is_dir() and recursive:
+            files.extend(
+                get_files_from_path(full_path, extension, recursive, include_dirs)
+            )
+
+            if include_dirs:
+                files.append(full_path)
+
+        # Base case: path is a file
+        if entry.is_file():
+            if extension is None or entry.name.endswith(extension):
+                files.append(full_path)
+
+    return sorted(files)
 
 
 def create_linked_list(phases: List[Phase]) -> CircularDoublyLinkedList:
@@ -41,10 +73,16 @@ def get_local_time():
     return time_as_string
 
 
-def generate_title_str(title: str) -> str:
+def generate_title_str(title: str, indent_index: int = 0) -> str:
+    indent = " " * indent_index * 4
     char = "."
     border = char * (len(title) + 4)
-    return f"\n{border}\n{char} {title} {char}\n{border}\n"
+
+    s = f"\n{indent}{border}\n"
+    s += f"{indent}{char} {title} {char}\n"
+    s += f"{indent}{border}\n"
+
+    return s
 
 
 def readable_keycode(key: str) -> str:
@@ -83,3 +121,7 @@ def generate_controls_file(config: ConfigSchema) -> str:
         ]
         f.write(generate_title_str("Endings") + "\n\n")
         f.write(tabulate(endings, headers, tablefmt) + "\n\n")
+
+
+def none_or_whitespace(f):
+    return f is None or f.isspace()

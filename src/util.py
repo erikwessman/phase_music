@@ -5,7 +5,7 @@ from typing import List
 from tabulate import tabulate
 
 from constants import KEYBIND_FULLSCREEN, PATH_CONTROLS
-from src.dataobjects.config_schema import ConfigSchema
+from dataobjects.config_schema import ConfigSchema
 from dataobjects.phase import Phase
 from linked_list import CircularDoublyLinkedList
 

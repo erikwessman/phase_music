@@ -5,9 +5,9 @@ from pydantic import BaseModel
 
 class PhaseSchema(BaseModel):
     name: str
-    audios: List[str]
+    soundtracks: List[str]
 
-    imgs: str
+    img: str
     """Image OR directory of images"""
 
 

@@ -6,16 +6,16 @@
     "phases": [
         {
             "name": "Explore",
-            "imgs": "explore/",
-            "audios": [
+            "img": "explore/",
+            "soundtracks": [
                 "steampunk_station.mp3",
                 "magic_shoppe.mp3"
             ]
         },
         {
             "name": "Haunt Roll",
-            "imgs": "haunt_roll/",
-            "audios": [
+            "img": "haunt_roll/",
+            "soundtracks": [
                 "circus.mp3"
             ]
         }

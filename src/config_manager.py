@@ -10,7 +10,7 @@ import pygame
 from pydantic import ValidationError
 
 from constants import PATH_CONFIGS
-from src.dataobjects.config_schema import ConfigSchema
+from dataobjects.config_schema import ConfigSchema
 from dataobjects.ending import Ending
 from dataobjects.phase import Phase
 from dataobjects.sfx import Sfx
@@ -65,8 +65,12 @@ class ConfigManager:
             self._latest_load = phase.name
             phase_instances = []
 
-            audio_paths = self._get_files_from_asset(phase.audio)
-            img_paths = self._get_files_from_asset(phase.imgs)
+            audio_paths = []
+            for asset in phase.soundtracks:
+                for path in self._get_files_from_asset(asset):
+                    audio_paths.append(path)
+
+            img_paths = self._get_files_from_asset(phase.img)
 
             for img in img_paths:
                 audio = random.choice(audio_paths)
@@ -183,8 +187,10 @@ class ConfigManager:
     @staticmethod
     def assert_files_exists(config: ConfigSchema) -> None:
         for phase in config.phases:
-            ConfigManager.asset_to_path(config, phase.imgs)
-            ConfigManager.asset_to_path(config, phase.audio)
+            ConfigManager.asset_to_path(config, phase.img)
+
+            for soundtrack in phase.soundtracks:
+                ConfigManager.asset_to_path(config, soundtrack)
 
         for ending in config.endings:
             ConfigManager.asset_to_path(config, ending.img)

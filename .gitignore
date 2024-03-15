@@ -1,6 +1,7 @@
 .venv/
 controls.txt
 .vscode/
+.idea/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files

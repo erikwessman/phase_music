@@ -8,7 +8,7 @@ import pygame
 import util as util
 from config_manager import ConfigManager
 from constants import KEYBIND_FULLSCREEN
-from src.dataobjects.config_schema import ConfigSchema
+from dataobjects.config_schema import ConfigSchema
 from linked_list import Node
 
 

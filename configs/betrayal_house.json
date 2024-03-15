@@ -8,15 +8,16 @@
             "name": "Explore",
             "img": "explore/",
             "soundtracks": [
-                "steampunk_station.mp3",
-                "magic_shoppe.mp3"
+                "all_hallows_eve.mp3",
+                "the_attic.mp3",
+                "vampyr.mp3"
             ]
         },
         {
             "name": "Haunt Roll",
             "img": "haunt_roll/",
             "soundtracks": [
-                "circus.mp3"
+                "docking_bay.mp3"
             ]
         }
     ],

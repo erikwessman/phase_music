@@ -1,0 +1,115 @@
+{
+    "metadata": {
+        "name": "Blood Rage",
+        "assets_dir": "blood_rage"
+    },
+    "phases": [
+        {
+            "name": "God's Gift",
+            "img": "gods_gift/",
+            "soundtracks": [
+                "elven_glade.mp3"
+            ]
+        },
+        {
+            "name": "Action",
+            "img": "action/",
+            "soundtracks": [
+                "skirmish.mp3"
+            ]
+        },
+        {
+            "name": "Discard",
+            "img": "discard/",
+            "soundtracks": [
+                "weirder_things_2.mp3"
+            ]
+        },
+        {
+            "name": "Quest",
+            "img": "quest/",
+            "soundtracks": [
+                "den_of_liniquity.mp3"
+            ]
+        },
+        {
+            "name": "Ragnarok",
+            "img": "ragnarok/",
+            "soundtracks": [
+                "unto_the_breach.mp3"
+            ]
+        },
+        {
+            "name": "Release Valhalla",
+            "img": "release_valhalla/",
+            "soundtracks": [
+                "village_of_the_damned.mp3"
+            ]
+        }
+    ],
+    "endings": [
+        {
+            "key": "K_r",
+            "name": "Raven",
+            "img": "raven.webp",
+            "audio": "dunk.mp3"
+        },
+        {
+            "key": "K_b",
+            "name": "Bear",
+            "img": "bear.webp",
+            "audio": "dunk.mp3"
+        },
+        {
+            "key": "K_s",
+            "name": "Serpent",
+            "img": "serpent.webp",
+            "audio": "dunk.mp3"
+        },
+        {
+            "key": "K_w",
+            "name": "Wolf",
+            "img": "wolf.webp",
+            "audio": "dunk.mp3"
+        },
+        {
+            "key": "K_m",
+            "name": "Ram",
+            "img": "ram.webp",
+            "audio": "dunk.mp3"
+        }
+    ],
+    "sfx": [
+        {
+            "key": "K_1",
+            "name": "Power Up",
+            "audio": "power_up.mp3"
+        },
+        {
+            "key": "K_2",
+            "name": "Horn",
+            "audio": "horn.mp3"
+        },
+        {
+            "key": "K_3",
+            "name": "Roar",
+            "audio": "roar.mp3"
+        },
+        {
+            "key": "K_4",
+            "name": "Angel",
+            "audio": "angel.mp3"
+        },
+        {
+            "key": "K_5",
+            "name": "Bell",
+            "audio": "bell.mp3"
+        },
+        {
+            "key": "K_6",
+            "name": "Crow",
+            "audio": "crow.mp3"
+        }
+    ],
+    "font": "norse.otf"
+}

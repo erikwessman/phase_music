@@ -11,7 +11,6 @@ from pydantic import ValidationError
 
 from constants import PATH_CONFIGS
 from dataobjects.config_schema import ConfigSchema
-from dataobjects.ending import Ending
 from dataobjects.phase import Phase
 from dataobjects.sfx import Sfx
 from util import generate_title_str, get_files_from_path, none_or_whitespace
@@ -21,7 +20,6 @@ class ConfigManager:
     _latest_load: str = ""
 
     _phases: Optional[List[Phase]] = None
-    _endings: Optional[List[Ending]] = None
     _sfxs: Optional[List[Sfx]] = None
 
     _ASSETS_DIR = "assets"
@@ -34,7 +32,7 @@ class ConfigManager:
         self._config = config
 
     def load_assets(self) -> None:
-        for method in [self._load_phases, self._load_endings, self._load_sfx]:
+        for method in [self._load_phases, self._load_sfx]:
             thread = threading.Thread(target=method)
             thread.start()
 
@@ -45,7 +43,7 @@ class ConfigManager:
         if not self._loading_complete():
             raise ValueError("Assets not loaded, use load_assets() first")
 
-        return {"phases": self._phases, "endings": self._endings, "sfx": self._sfxs}
+        return {"phases": self._phases, "sfx": self._sfxs}
 
     def status(self) -> dict:
         return {
@@ -54,9 +52,7 @@ class ConfigManager:
         }
 
     def _loading_complete(self) -> bool:
-        return all(
-            asset is not None for asset in [self._phases, self._endings, self._sfxs]
-        )
+        return all(asset is not None for asset in [self._phases, self._sfxs])
 
     def _load_phases(self) -> None:
         phases = []
@@ -74,7 +70,7 @@ class ConfigManager:
 
             for img in img_paths:
                 audio = random.choice(audio_paths)
-                phase_instances.append(Phase(phase.name, audio, img))
+                phase_instances.append(Phase(phase.name, audio, img, phase.key))
 
             phases.append(phase_instances)
 
@@ -88,19 +84,6 @@ class ConfigManager:
                 ordered_phases.append(phase[phase_index])
 
         self._phases = ordered_phases
-
-    def _load_endings(self) -> None:
-        endings = []
-
-        for ending in self._config.endings:
-            self._latest_load = ending.name
-            audio = random.choice(self._get_files_from_asset(ending.audio))
-            imgs = random.choice(self._get_files_from_asset(ending.img))
-            endings.append(
-                Ending(getattr(pygame, ending.key), ending.name, audio, imgs)
-            )
-
-        self._endings = endings
 
     def _load_sfx(self) -> None:
         sfxs = []
@@ -191,10 +174,6 @@ class ConfigManager:
 
             for soundtrack in phase.soundtracks:
                 ConfigManager.asset_to_path(config, soundtrack)
-
-        for ending in config.endings:
-            ConfigManager.asset_to_path(config, ending.img)
-            ConfigManager.asset_to_path(config, ending.audio)
 
         for sfx in config.sfx:
             ConfigManager.asset_to_path(config, sfx.audio)

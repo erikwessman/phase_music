@@ -27,20 +27,22 @@
                 "escape_from_shadow.mp3",
                 "terror_in_the_woods.mp3"
             ]
-        }
-    ],
-    "endings": [
-        {
-            "key": "K_v",
-            "name": "Victory",
-            "img": "victory.webp",
-            "audio": "homecoming.mp3"
         },
         {
-            "key": "K_d",
+            "name": "Victory",
+            "img": "victory.webp",
+            "soundtracks": [
+                "homecoming.mp3"
+            ],
+            "key": "K_v"
+        },
+        {
             "name": "Defeat",
             "img": "defeat.webp",
-            "audio": "lord_of_bones.mp3"
+            "soundtracks": [
+                "lord_of_bones.mp3"
+            ],
+            "key": "K_d"
         }
     ],
     "sfx": [

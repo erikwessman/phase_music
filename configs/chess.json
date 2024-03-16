@@ -1,0 +1,71 @@
+{
+    "metadata": {
+        "name": "Chess",
+        "assets_dir": "chess"
+    },
+    "phases": [
+        {
+            "name": "White",
+            "img": "white.webp",
+            "soundtracks": [
+                "circus.mp3"
+            ]
+        },
+        {
+            "name": "Black",
+            "img": "black.webp",
+            "soundtracks": [
+                "circus.mp3"
+            ]
+        },
+        {
+            "name": "White Wins!",
+            "img": "white_wins.webp",
+            "soundtracks": [
+                "circus.mp3"
+            ],
+            "key": "K_w"
+        },
+        {
+            "name": "Black Wins!",
+            "img": "black_wins.webp",
+            "soundtracks": [
+                "circus.mp3"
+            ],
+            "key": "K_b"
+        }
+    ],
+    "sfx": [
+        {
+            "key": "K_1",
+            "name": "Power Up",
+            "audio": "power_up.mp3"
+        },
+        {
+            "key": "K_2",
+            "name": "Horn",
+            "audio": "horn.mp3"
+        },
+        {
+            "key": "K_3",
+            "name": "Roar",
+            "audio": "roar.mp3"
+        },
+        {
+            "key": "K_4",
+            "name": "Angel",
+            "audio": "angel.mp3"
+        },
+        {
+            "key": "K_5",
+            "name": "Bell",
+            "audio": "bell.mp3"
+        },
+        {
+            "key": "K_6",
+            "name": "Crow",
+            "audio": "crow.mp3"
+        }
+    ],
+    "font": "norse.otf"
+}

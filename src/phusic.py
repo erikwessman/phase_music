@@ -61,7 +61,6 @@ class Game:
 
         res = self.cm.get_assets()
         self.phases = res["phases"]
-        self.endings = res["endings"]
         self.sfx = res["sfx"]
 
         self.linked_list = util.create_linked_list(self.phases)
@@ -103,9 +102,11 @@ class Game:
                     elif event.key == pygame.K_c:
                         exit(0)
 
-                for ending in self.endings:
-                    if event.key == ending.key:
-                        ending_node = Node(ending)
+                for phase in self.phases:
+                    if phase.key is not None and event.key == getattr(
+                        pygame, phase.key
+                    ):
+                        ending_node = Node(phase)
                         self._change_phase(ending_node)
 
                 for sfx in self.sfx:

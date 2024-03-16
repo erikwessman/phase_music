@@ -91,13 +91,16 @@ def readable_keycode(key: str) -> str:
         K_v -> v
         K_SPACE -> Space
     """
+    if key is None:
+        return ""
+
     if key.startswith("K_"):
         return key[2:].title()
 
     return key
 
 
-def generate_controls_file(config: ConfigSchema) -> str:
+def generate_controls_file(config: ConfigSchema) -> None:
     headers = ["Action", "Key"]
     tablefmt = "github"
 
@@ -115,12 +118,14 @@ def generate_controls_file(config: ConfigSchema) -> str:
         f.write(generate_title_str("SFX") + "\n\n")
         f.write(tabulate(sfx, headers, tablefmt) + "\n\n")
 
-        # Endings
-        endings = [
-            (ending.name, readable_keycode(ending.key)) for ending in config.endings
-        ]
-        f.write(generate_title_str("Endings") + "\n\n")
-        f.write(tabulate(endings, headers, tablefmt) + "\n\n")
+        # Phases
+        phases = sorted(
+            [(phase.name, readable_keycode(phase.key)) for phase in config.phases],
+            key=lambda x: x[1],
+            reverse=True,
+        )
+        f.write(generate_title_str("Phases") + "\n\n")
+        f.write(tabulate(phases, headers, tablefmt) + "\n\n")
 
 
 def none_or_whitespace(f):

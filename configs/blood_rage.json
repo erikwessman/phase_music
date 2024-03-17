@@ -3,8 +3,10 @@
         "name": "Blood Rage",
         "assets_dir": "blood_rage"
     },
+    "start_phase": "gods_gift",
     "phases": [
         {
+            "unique_id": "gods_gift",
             "name": "God's Gift",
             "img": "gods_gift/",
             "soundtracks": [
@@ -12,6 +14,7 @@
             ]
         },
         {
+            "unique_id": "action",
             "name": "Action",
             "img": "action/",
             "soundtracks": [
@@ -19,6 +22,7 @@
             ]
         },
         {
+            "unique_id": "discard",
             "name": "Discard",
             "img": "discard/",
             "soundtracks": [
@@ -26,6 +30,7 @@
             ]
         },
         {
+            "unique_id": "quest",
             "name": "Quest",
             "img": "quest/",
             "soundtracks": [
@@ -33,6 +38,7 @@
             ]
         },
         {
+            "unique_id": "ragnarok",
             "name": "Ragnarok",
             "img": "ragnarok/",
             "soundtracks": [
@@ -40,43 +46,57 @@
             ]
         },
         {
+            "unique_id": "release_valhalla",
             "name": "Release Valhalla",
             "img": "release_valhalla/",
             "soundtracks": [
                 "village_of_the_damned.mp3"
             ]
-        }
-    ],
-    "endings": [
+        },
         {
+            "unique_id": "raven",
             "key": "K_r",
             "name": "Raven",
             "img": "raven.webp",
-            "audio": "dunk.mp3"
+            "soundtracks": [
+                "dunk.mp3"
+            ]
         },
         {
+            "unique_id": "bear",
             "key": "K_b",
             "name": "Bear",
             "img": "bear.webp",
-            "audio": "dunk.mp3"
+            "soundtracks": [
+                "dunk.mp3"
+            ]
         },
         {
+            "unique_id": "serpent",
             "key": "K_s",
             "name": "Serpent",
             "img": "serpent.webp",
-            "audio": "dunk.mp3"
+            "soundtracks": [
+                "dunk.mp3"
+            ]
         },
         {
+            "unique_id": "wolf",
             "key": "K_w",
             "name": "Wolf",
             "img": "wolf.webp",
-            "audio": "dunk.mp3"
+            "soundtracks": [
+                "dunk.mp3"
+            ]
         },
         {
+            "unique_id": "ram",
             "key": "K_m",
             "name": "Ram",
             "img": "ram.webp",
-            "audio": "dunk.mp3"
+            "soundtracks": [
+                "dunk.mp3"
+            ]
         }
     ],
     "sfx": [

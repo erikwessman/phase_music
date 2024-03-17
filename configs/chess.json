@@ -3,8 +3,11 @@
         "name": "Chess",
         "assets_dir": "chess"
     },
+    "start_phase": "white",
     "phases": [
         {
+            "unique_id": "white",
+            "next_phase": "black",
             "name": "White",
             "img": "white.webp",
             "soundtracks": [
@@ -12,6 +15,8 @@
             ]
         },
         {
+            "unique_id": "black",
+            "next_phase": "white",
             "name": "Black",
             "img": "black.webp",
             "soundtracks": [
@@ -19,6 +24,7 @@
             ]
         },
         {
+            "unique_id": "white_wins",
             "name": "White Wins!",
             "img": "white_wins.webp",
             "soundtracks": [
@@ -27,6 +33,7 @@
             "key": "K_w"
         },
         {
+            "unique_id": "black_wins",
             "name": "Black Wins!",
             "img": "black_wins.webp",
             "soundtracks": [
@@ -67,5 +74,5 @@
             "audio": "crow.mp3"
         }
     ],
-    "font": "norse.otf"
+    "font": "default.otf"
 }

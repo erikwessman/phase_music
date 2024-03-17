@@ -6,6 +6,7 @@ import time
 import pygame
 
 import util as util
+from config_cop import patrol
 from config_manager import ConfigManager
 from constants import KEYBIND_FULLSCREEN
 from dataobjects.config_schema import ConfigSchema
@@ -286,10 +287,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Validate configs
-    ConfigManager.assert_valid_configs()
-    ConfigManager.assert_non_clashing_assets()
-    ConfigManager.assert_valid_names()
-
+    patrol()
     config = ConfigManager.parse_schema(args.config)
 
     # Write controls

@@ -5,6 +5,8 @@ from pydantic import BaseModel
 
 class PhaseSchema(BaseModel):
     name: str
+    unique_id: str
+    next_phase: Optional[str] = None
     soundtracks: List[str]
 
     img: str
@@ -26,6 +28,7 @@ class MetadataSchema(BaseModel):
 
 
 class ConfigSchema(BaseModel):
+    start_phase: str
     metadata: MetadataSchema
     phases: List[PhaseSchema]
     sfx: List[SfxSchema]

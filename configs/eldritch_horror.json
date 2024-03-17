@@ -3,8 +3,10 @@
         "name": "Eldritch Horror",
         "assets_dir": "eldritch_horror"
     },
+    "start_phase": "action",
     "phases": [
         {
+            "unique_id": "action",
             "name": "Action",
             "img": "action/",
             "soundtracks": [
@@ -13,6 +15,7 @@
             ]
         },
         {
+            "unique_id": "encounter",
             "name": "Encounter",
             "img": "encounter/",
             "soundtracks": [
@@ -21,6 +24,7 @@
             ]
         },
         {
+            "unique_id": "mythos",
             "name": "Mythos",
             "img": "mythos/",
             "soundtracks": [
@@ -29,6 +33,7 @@
             ]
         },
         {
+            "unique_id": "victory",
             "name": "Victory",
             "img": "victory.webp",
             "soundtracks": [
@@ -37,6 +42,7 @@
             "key": "K_v"
         },
         {
+            "unique_id": "defeat",
             "name": "Defeat",
             "img": "defeat.webp",
             "soundtracks": [

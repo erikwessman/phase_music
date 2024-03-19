@@ -52,7 +52,8 @@ def _assert_valid_config(config: ConfigSchema) -> None:
     for phase in config.phases:
         if phase.next_phase is not None:
             if phase.next_phase not in unique_ids:
-                raise ValueError("Invalid next_phase")
+                msg = f"'{phase.unique_id}' is pointing to a non-existent next phase: {phase.next_phase}"
+                raise ValueError(msg)
 
 
 def _assert_valid_filenames() -> None:

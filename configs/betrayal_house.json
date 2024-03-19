@@ -17,6 +17,7 @@
         },
         {
             "unique_id": "haunt_roll",
+            "next_phase": "explore",
             "name": "Haunt Roll",
             "img": "haunt_roll/",
             "soundtracks": [
@@ -25,6 +26,7 @@
         },
         {
             "unique_id": "setup",
+            "next_phase": "explore",
             "key": "K_o",
             "name": "Setup",
             "img": "setup.webp",

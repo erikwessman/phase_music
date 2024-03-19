@@ -7,6 +7,7 @@
     "phases": [
         {
             "unique_id": "gods_gift",
+            "next_phase": "action",
             "name": "God's Gift",
             "img": "gods_gift/",
             "soundtracks": [
@@ -15,6 +16,7 @@
         },
         {
             "unique_id": "action",
+            "next_phase": "discard",
             "name": "Action",
             "img": "action/",
             "soundtracks": [
@@ -23,6 +25,7 @@
         },
         {
             "unique_id": "discard",
+            "next_phase": "quest",
             "name": "Discard",
             "img": "discard/",
             "soundtracks": [
@@ -31,6 +34,7 @@
         },
         {
             "unique_id": "quest",
+            "next_phase": "ragnarok",
             "name": "Quest",
             "img": "quest/",
             "soundtracks": [
@@ -39,6 +43,7 @@
         },
         {
             "unique_id": "ragnarok",
+            "next_phase": "release_valhalla",
             "name": "Ragnarok",
             "img": "ragnarok/",
             "soundtracks": [
@@ -47,6 +52,7 @@
         },
         {
             "unique_id": "release_valhalla",
+            "next_phase": "gods_gift",
             "name": "Release Valhalla",
             "img": "release_valhalla/",
             "soundtracks": [

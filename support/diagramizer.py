@@ -1,36 +1,44 @@
-import argparse
 import json
 import os
 
-WRITE_TO = "_phases.mmd"
+WRITE_TO = "_diagrams"
+CONFIGS = "configs"
 MERMAID_TEMPLATE = "graph TD\n\n"
 
 
 def to_mermaid(config: dict) -> str:
-    phases = [
-        (phase["unique_id"], phase.get("next_phase")) for phase in config["phases"]
-    ]
-
     output = MERMAID_TEMPLATE
-    for uid, next_phase in phases:
+    output += "style start fill:#1e90ff,color:#fff \n"
+    output += f"start --> {config["start_phase"]} \n"
+
+    for phase in config["phases"]:
+        uid = phase["unique_id"]
+        next_phase = phase.get("next_phase")
+        key = phase.get("key")
+
         if next_phase is None:
             output += f"{uid}\n"
         else:
             output += f"{uid} --> {next_phase}\n"
 
+        if key is not None:
+            output += f"{uid} -->|{key}| {uid}\n"
+
     return output
 
 
 if __name__ == "__main__":
-    argparser = argparse.ArgumentParser()
-    argparser.add_argument("--config", help="Path to config")
-    args = argparser.parse_args()
+    if not os.path.exists(WRITE_TO):
+        os.makedirs(WRITE_TO)
 
-    if not os.path.exists(args.config):
-        raise FileNotFoundError(f"Config not found: {args.config}")
+    for f in os.listdir(CONFIGS):
+        config_path = os.path.join(CONFIGS, f)
 
-    data = json.load(open(args.config))
-    diagram = to_mermaid(data)
+        with open(config_path, "r") as file:
+            data = json.load(file)
 
-    with open(WRITE_TO, "w") as f:
-        f.write(diagram)
+        diagram = to_mermaid(data)
+
+        new_filename = f"{os.path.splitext(f)[0]}.mmd"
+        with open(os.path.join(WRITE_TO, new_filename), "w") as f:
+            f.write(diagram)

@@ -1,7 +1,6 @@
 .venv/
-controls.txt
+_diagrams/
 _controls.txt
-_phases.mmd
 .vscode/
 .idea/
 

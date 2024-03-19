@@ -7,6 +7,7 @@
     "phases": [
         {
             "unique_id": "action",
+            "next_phase": "encounter",
             "name": "Action",
             "img": "action/",
             "soundtracks": [
@@ -16,6 +17,7 @@
         },
         {
             "unique_id": "encounter",
+            "next_phase": "mythos",
             "name": "Encounter",
             "img": "encounter/",
             "soundtracks": [
@@ -25,6 +27,7 @@
         },
         {
             "unique_id": "mythos",
+            "next_phase": "action",
             "name": "Mythos",
             "img": "mythos/",
             "soundtracks": [

@@ -1,3 +1,6 @@
+from typing import Optional
+
+
 class Node:
     def __init__(self, value):
         self.value = value
@@ -7,8 +10,8 @@ class Node:
 
 class CircularDoublyLinkedList:
     def __init__(self):
-        self.head = None
-        self.tail = None
+        self.head: Optional[Node] = None
+        self.tail: Optional[Node] = None
 
     def append(self, value):
         new_node = Node(value)

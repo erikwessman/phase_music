@@ -9,7 +9,7 @@ MERMAID_TEMPLATE = "graph TD\n\n"
 def to_mermaid(config: dict) -> str:
     output = MERMAID_TEMPLATE
     output += "style start fill:#1e90ff,color:#fff \n"
-    output += f"start --> {config["start_phase"]} \n"
+    output += "start --> " + config["start_phase"] + "\n"
 
     for phase in config["phases"]:
         uid = phase["unique_id"]

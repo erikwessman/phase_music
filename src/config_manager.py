@@ -64,7 +64,16 @@ class ConfigManager:
 
             for img in img_paths:
                 audio = random.choice(audio_paths)
-                phase_instances.append(Phase(phase.name, audio, img, phase.key))
+                phase_instances.append(
+                    Phase(
+                        phase.unique_id,
+                        phase.name,
+                        audio,
+                        img,
+                        key=phase.key,
+                        next_phase_id=phase.next_phase,
+                    )
+                )
 
             phases.append(phase_instances)
 

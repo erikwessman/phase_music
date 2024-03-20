@@ -58,11 +58,25 @@ def get_files_from_path(
     return sorted(files)
 
 
-def create_linked_list(phases: List[Phase]) -> CircularDoublyLinkedList:
+def create_linked_list(head: Phase, phases: List[Phase]) -> CircularDoublyLinkedList:
     linked_list = CircularDoublyLinkedList()
+    linked_list.append(head)
+    added_phases = [head.unique_id]
 
-    for phase in phases:
-        linked_list.append(phase)
+    while True:
+        next_phase_id = linked_list.tail.value.next_phase_id
+
+        # Loop
+        if next_phase_id in added_phases:
+            break
+
+        for phase in phases:
+            if phase.unique_id == next_phase_id:
+                added_phases.append(phase.unique_id)
+                linked_list.append(phase)
+                break
+        else:
+            break
 
     return linked_list
 

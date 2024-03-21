@@ -1,5 +1,6 @@
 .venv/
-controls.txt
+_diagrams/
+_controls.txt
 .vscode/
 .idea/
 

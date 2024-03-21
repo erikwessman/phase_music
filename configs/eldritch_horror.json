@@ -3,8 +3,11 @@
         "name": "Eldritch Horror",
         "assets_dir": "eldritch_horror"
     },
+    "start_phase": "action",
     "phases": [
         {
+            "unique_id": "action",
+            "next_phase": "encounter",
             "name": "Action",
             "img": "action/",
             "soundtracks": [
@@ -13,6 +16,8 @@
             ]
         },
         {
+            "unique_id": "encounter",
+            "next_phase": "mythos",
             "name": "Encounter",
             "img": "encounter/",
             "soundtracks": [
@@ -21,26 +26,32 @@
             ]
         },
         {
+            "unique_id": "mythos",
+            "next_phase": "action",
             "name": "Mythos",
             "img": "mythos/",
             "soundtracks": [
                 "escape_from_shadow.mp3",
                 "terror_in_the_woods.mp3"
             ]
-        }
-    ],
-    "endings": [
-        {
-            "key": "K_v",
-            "name": "Victory",
-            "img": "victory.webp",
-            "audio": "homecoming.mp3"
         },
         {
-            "key": "K_d",
+            "unique_id": "victory",
+            "name": "Victory",
+            "img": "victory.webp",
+            "soundtracks": [
+                "homecoming.mp3"
+            ],
+            "key": "K_v"
+        },
+        {
+            "unique_id": "defeat",
             "name": "Defeat",
             "img": "defeat.webp",
-            "audio": "lord_of_bones.mp3"
+            "soundtracks": [
+                "lord_of_bones.mp3"
+            ],
+            "key": "K_d"
         }
     ],
     "sfx": [

@@ -3,8 +3,10 @@
         "name": "Betrayal at House on the Hill",
         "assets_dir": "betrayal_house"
     },
+    "start_phase": "setup",
     "phases": [
         {
+            "unique_id": "explore",
             "name": "Explore",
             "img": "explore/",
             "soundtracks": [
@@ -14,37 +16,50 @@
             ]
         },
         {
+            "unique_id": "haunt_roll",
+            "next_phase": "explore",
             "name": "Haunt Roll",
             "img": "haunt_roll/",
             "soundtracks": [
                 "docking_bay.mp3"
             ]
-        }
-    ],
-    "endings": [
+        },
         {
+            "unique_id": "setup",
+            "next_phase": "explore",
             "key": "K_o",
             "name": "Setup",
             "img": "setup.webp",
-            "audio": "hall_of_angels.mp3"
+            "soundtracks": [
+                "hall_of_angels.mp3"
+            ]
         },
         {
+            "unique_id": "haunting",
             "key": "K_h",
             "name": "Haunting",
             "img": "haunting.webp",
-            "audio": "barovian_castle.mp3"
+            "soundtracks": [
+                "barovian_castle.mp3"
+            ]
         },
         {
+            "unique_id": "explorers_win",
             "key": "K_v",
             "name": "Explorers Win",
             "img": "explorers_win.webp",
-            "audio": "dunk.mp3"
+            "soundtracks": [
+                "dunk.mp3"
+            ]
         },
         {
+            "unique_id": "haunting_win",
             "key": "K_d",
             "name": "Haunting Wins",
             "img": "haunting_win.webp",
-            "audio": "dunk.mp3"
+            "soundtracks": [
+                "dunk.mp3"
+            ]
         }
     ],
     "sfx": [

@@ -2,10 +2,12 @@ import argparse
 import math
 import sys
 import time
+from asyncio import Event
 
 import pygame
 
 import util as util
+from config_cop import patrol
 from config_manager import ConfigManager
 from constants import KEYBIND_FULLSCREEN
 from dataobjects.config_schema import ConfigSchema
@@ -61,10 +63,15 @@ class Game:
 
         res = self.cm.get_assets()
         self.phases = res["phases"]
-        self.endings = res["endings"]
         self.sfx = res["sfx"]
 
-        self.linked_list = util.create_linked_list(self.phases)
+        start_phase = next(
+            phase for phase in self.phases if phase.unique_id == config.start_phase
+        )
+        if not start_phase:
+            raise ValueError("Start phase not found")
+
+        self.linked_list = util.create_linked_list(start_phase, self.phases)
         self.curr_phase = self.linked_list.head
         self.next_phase = Node(None)
 
@@ -86,31 +93,34 @@ class Game:
                 self.running = False
 
             elif event.type == pygame.KEYDOWN:
-                if event.key == getattr(pygame, KEYBIND_FULLSCREEN):
-                    self._toggle_fullscreen()
+                self._handle_keydown(event)
 
-                if event.key == pygame.K_LEFT:
-                    self._change_phase(self.curr_phase.prev)
+    def _handle_keydown(self, event: Event) -> None:
+        if event.key == getattr(pygame, KEYBIND_FULLSCREEN):
+            self._toggle_fullscreen()
 
-                if event.key == pygame.K_RIGHT or event.key == pygame.K_SPACE:
-                    self._change_phase(self.curr_phase.next)
+        if event.key == pygame.K_LEFT:
+            self._change_phase(self.curr_phase.prev)
 
-                if pygame.key.get_mods() & pygame.KMOD_CTRL:
-                    if event.key == pygame.K_LEFT:
-                        self._set_phase(self.curr_phase.prev)
-                    elif event.key == pygame.K_RIGHT:
-                        self._set_phase(self.curr_phase.next)
-                    elif event.key == pygame.K_c:
-                        exit(0)
+        if event.key == pygame.K_RIGHT or event.key == pygame.K_SPACE:
+            self._change_phase(self.curr_phase.next)
 
-                for ending in self.endings:
-                    if event.key == ending.key:
-                        ending_node = Node(ending)
-                        self._change_phase(ending_node)
+        if pygame.key.get_mods() & pygame.KMOD_CTRL:
+            if event.key == pygame.K_LEFT:
+                self._set_phase(self.curr_phase.prev)
+            elif event.key == pygame.K_RIGHT:
+                self._set_phase(self.curr_phase.next)
+            elif event.key == pygame.K_c:
+                exit(0)
 
-                for sfx in self.sfx:
-                    if event.key == sfx.key:
-                        sfx.sound.play()
+        for phase in self.phases:
+            if phase.key is not None and event.key == getattr(pygame, phase.key):
+                ending_node = Node(phase)
+                self._change_phase(ending_node)
+
+        for sfx in self.sfx:
+            if event.key == sfx.key:
+                sfx.sound.play()
 
     def _toggle_fullscreen(self) -> None:
         self.is_fullscreen = not self.is_fullscreen
@@ -285,10 +295,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Validate configs
-    ConfigManager.assert_valid_configs()
-    ConfigManager.assert_non_clashing_assets()
-    ConfigManager.assert_valid_names()
-
+    patrol()
     config = ConfigManager.parse_schema(args.config)
 
     # Write controls

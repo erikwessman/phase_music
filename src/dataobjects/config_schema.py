@@ -1,21 +1,19 @@
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel
 
 
 class PhaseSchema(BaseModel):
     name: str
+    unique_id: str
+    next_phase: Optional[str] = None
     soundtracks: List[str]
 
     img: str
     """Image OR directory of images"""
 
-
-class EndingSchema(BaseModel):
-    key: str
-    name: str
-    img: str
-    audio: str
+    key: Optional[str] = None
+    """Optional key for the phase"""
 
 
 class SfxSchema(BaseModel):
@@ -30,8 +28,8 @@ class MetadataSchema(BaseModel):
 
 
 class ConfigSchema(BaseModel):
+    start_phase: str
     metadata: MetadataSchema
     phases: List[PhaseSchema]
-    endings: List[EndingSchema]
     sfx: List[SfxSchema]
     font: str

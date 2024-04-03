@@ -1,0 +1,57 @@
+{
+    "metadata": {
+        "name": "Exit - The Forgotten Island",
+        "assets_dir": "exit_island"
+    },
+    "start_phase": "setup",
+    "phases": [
+        {
+            "unique_id": "setup",
+            "next_phase": "explore_1",
+            "name": "Setup",
+            "img": "setup.webp",
+            "soundtracks": [
+                "nocturne.mp3"
+            ]
+        },
+        {
+            "unique_id": "explore_1",
+            "next_phase": "explore_2",
+            "name": "Explore 1",
+            "img": "explore_1.webp",
+            "soundtracks": [
+                "distilled_tropical.mp3",
+                "jungle_shaman.mp3",
+                "drowned_sailors.mp3"
+            ]
+        },
+        {
+            "unique_id": "explore_2",
+            "next_phase": "explore_1",
+            "name": "Explore 2",
+            "img": "explore_2.webp",
+            "soundtracks": [
+                "distilled_tropical.mp3",
+                "jungle_shaman.mp3",
+                "drowned_sailors.mp3"
+            ]
+        },
+        {
+            "unique_id": "win",
+            "name": "Win",
+            "img": "explore_1.webp",
+            "soundtracks": [
+                "circus.mp3"
+            ],
+            "key": "K_w"
+        }
+    ],
+    "sfx": [
+        {
+            "key": "K_1",
+            "name": "Bell",
+            "audio": "bell.mp3"
+        }
+    ],
+    "font": "default.otf"
+}

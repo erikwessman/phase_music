@@ -11,7 +11,7 @@
             "name": "Setup",
             "img": "setup.webp",
             "soundtracks": [
-                "nocturne.mp3"
+                "exit_setup.mp3"
             ]
         },
         {
@@ -27,7 +27,6 @@
         },
         {
             "unique_id": "explore_2",
-            "next_phase": "explore_1",
             "name": "Explore 2",
             "img": "explore_2.webp",
             "soundtracks": [

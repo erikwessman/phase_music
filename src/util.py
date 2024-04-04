@@ -7,7 +7,7 @@ from tabulate import tabulate
 from constants import KEYBIND_FULLSCREEN, PATH_CONTROLS
 from dataobjects.config_schema import ConfigSchema
 from dataobjects.phase import Phase
-from linked_list import CircularDoublyLinkedList
+from linked_list import LinkedList
 
 
 def get_files_from_path(
@@ -58,27 +58,31 @@ def get_files_from_path(
     return sorted(files)
 
 
-def create_linked_list(head: Phase, phases: List[Phase]) -> CircularDoublyLinkedList:
-    linked_list = CircularDoublyLinkedList()
-    linked_list.append(head)
+def create_linked_list(head: Phase, phases: List[Phase]) -> LinkedList:
+    list = LinkedList()
+    list.append(head)
     added_phases = [head.unique_id]
 
     while True:
-        next_phase_id = linked_list.tail.value.next_phase_id
+        next_phase_id = list.tail.value.next_phase_id
 
-        # Loop
         if next_phase_id in added_phases:
+            # Loop to the already added phase
+            tail = list.tail
+
+            loop_to = list.get_node(lambda x: x.unique_id == next_phase_id)
+            tail.next = loop_to
             break
 
         for phase in phases:
             if phase.unique_id == next_phase_id:
                 added_phases.append(phase.unique_id)
-                linked_list.append(phase)
+                list.append(phase)
                 break
         else:
             break
 
-    return linked_list
+    return list
 
 
 def get_local_time():

@@ -72,6 +72,7 @@ class ConfigManager:
                         img,
                         key=phase.key,
                         next_phase_id=phase.next_phase,
+                        duration=phase.duration,
                     )
                 )
 

@@ -15,6 +15,9 @@ class PhaseSchema(BaseModel):
     key: Optional[str] = None
     """Optional key for the phase"""
 
+    duration: Optional[int] = None
+    """Optional, how long the phase should last in seconds"""
+
 
 class SfxSchema(BaseModel):
     name: str

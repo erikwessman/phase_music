@@ -1,0 +1,85 @@
+{
+    "metadata": {
+        "name": "Exit - The Forgotten Island",
+        "assets_dir": "exit_island"
+    },
+    "start_phase": "setup",
+    "phases": [
+        {
+            "unique_id": "setup",
+            "next_phase": "explore_1",
+            "name": "Setup",
+            "img": "setup.webp",
+            "soundtracks": [
+                "exit_setup.mp3"
+            ]
+        },
+        {
+            "unique_id": "explore_1",
+            "next_phase": "explore_2",
+            "name": "Explore 1",
+            "img": "explore_1.webp",
+            "duration": 600,
+            "soundtracks": [
+                "jungle_shaman.mp3"
+            ]
+        },
+        {
+            "unique_id": "explore_2",
+            "next_phase": "explore_3",
+            "name": "Explore 2",
+            "duration": 600,
+            "img": "explore_2.webp",
+            "soundtracks": [
+                "distilled_tropical.mp3"
+            ]
+        },
+        {
+            "unique_id": "explore_3",
+            "next_phase": "explore_4",
+            "name": "Explore 3",
+            "duration": 600,
+            "img": "explore_3.webp",
+            "soundtracks": [
+                "rope_bridge.mp3"
+            ]
+        },
+        {
+            "unique_id": "explore_4",
+            "next_phase": "explore_1",
+            "name": "Explore 4",
+            "duration": 600,
+            "img": "explore_4.webp",
+            "soundtracks": [
+                "drowned_sailors.mp3"
+            ]
+        },
+        {
+            "unique_id": "win",
+            "name": "Win",
+            "img": "win.webp",
+            "soundtracks": [
+                "caribbean_dream.mp3"
+            ],
+            "key": "K_w"
+        }
+    ],
+    "sfx": [
+        {
+            "key": "K_1",
+            "name": "Bell",
+            "audio": "bell.mp3"
+        },
+        {
+            "key": "K_2",
+            "name": "Monkey",
+            "audio": "monkey.mp3"
+        },
+        {
+            "key": "K_3",
+            "name": "Angel",
+            "audio": "angel.mp3"
+        }
+    ],
+    "font": "default.otf"
+}

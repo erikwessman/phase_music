@@ -3,6 +3,7 @@ import math
 import sys
 import time
 from asyncio import Event
+from typing import Optional
 
 import pygame
 
@@ -25,7 +26,6 @@ class Game:
 
     # Drawing
     FONT_SIZE = 42
-    FONT_COLOR = (255, 255, 255)
     INITIAL_WINDOW_SIZE = (1280, 720)
     LOGICAL_SIZE = (2560, 1440)
     logical_surface = pygame.Surface(LOGICAL_SIZE)
@@ -35,6 +35,7 @@ class Game:
     fade_step = 0
     is_fading = False
     is_fullscreen = True
+    phase_started_at: float = 0
 
     def __init__(self, config: ConfigSchema):
         self.cm = ConfigManager(config)
@@ -95,6 +96,14 @@ class Game:
             elif event.type == pygame.KEYDOWN:
                 self._handle_keydown(event)
 
+        # Automatic phase change
+        if self.curr_phase.value.duration is None:
+            return
+
+        time_in_phase = time.time() - self.phase_started_at
+        if time_in_phase > self.curr_phase.value.duration:
+            self._change_phase(self.curr_phase.next)
+
     def _handle_keydown(self, event: Event) -> None:
         if event.key == getattr(pygame, KEYBIND_FULLSCREEN):
             self._toggle_fullscreen()
@@ -137,18 +146,14 @@ class Game:
         phase.sound.set_volume(1.0)
         phase.sound.play(-1)
         phase.background = pygame.transform.scale(phase.background, self.LOGICAL_SIZE)
+        self.phase_started_at = time.time()
 
-    def _change_phase(self, phase_node: Node) -> None:
+    def _change_phase(self, phase_node: Optional[Node]) -> None:
         if self.is_fading:
             return
 
         if not phase_node:
-            if not self.linked_list.head:
-                print("Linked list is empty")
-                exit(1)
-
-            print("No next phase, reverting back to start...")
-            phase_node = self.linked_list.head
+            return
 
         self.is_fading = True
         self.fade_step = 0
@@ -158,11 +163,16 @@ class Game:
         phase.sound.set_volume(0.0)
         phase.sound.play(-1)
         phase.background = pygame.transform.scale(phase.background, self.LOGICAL_SIZE)
+        self.phase_started_at = time.time()
 
-    def _set_phase(self, phase_node: Node) -> None:
+    def _set_phase(self, phase_node: Optional[Node]) -> None:
         """Update the current phase without fading"""
+        if not phase_node:
+            return
+
         if self.next_phase.value:
             self.next_phase.value.sound.stop()
+
         self.curr_phase.value.sound.stop()
         self.is_fading = False
         self.fade_step = 0
@@ -173,10 +183,14 @@ class Game:
         phase.background = pygame.transform.scale(phase.background, self.LOGICAL_SIZE)
 
         self.curr_phase = phase_node
+        self.phase_started_at = time.time()
 
     def _draw_phase(self) -> None:
         curr_phase = self.curr_phase.value
         next_phase = self.next_phase.value
+
+        text_margin = 32
+        clock_margin = 64
 
         if self.is_fading:
             # Handle fade background
@@ -200,20 +214,31 @@ class Game:
             self.logical_surface.blit(curr_phase.background, (0, 0))
 
             # Draw phase name
-            phase_position = (20, self.LOGICAL_SIZE[1] - 10 - self.FONT_SIZE)
-            self._draw_text_with_outline(curr_phase.name, phase_position)
+            phase_position = (
+                text_margin,
+                self.LOGICAL_SIZE[1] - self.FONT_SIZE - text_margin,
+            )
 
-        # Draw current time
-        curr_time = util.get_local_time()
-        time_position = (
-            self.LOGICAL_SIZE[0] - self.FONT_SIZE - 55,
-            self.LOGICAL_SIZE[1] - 10 - self.FONT_SIZE,
-        )
-        self._draw_text_with_outline(curr_time, time_position)
+            surface = self._draw_text_with_outline(curr_phase.name, phase_position)
+
+            # Draw time
+            self._draw_text_with_outline(
+                util.get_local_time(),
+                (surface.get_width() + clock_margin, phase_position[1]),
+                opacity=0.6,
+            )
 
         pygame.display.flip()
 
-    def _draw_text_with_outline(self, text, position, outline_width: int = 2) -> None:
+    def _draw_text_with_outline(
+        self, text, position, outline_width: int = 2, opacity: int = 1
+    ) -> pygame.Surface:
+        """
+        Draws text on a pygame surface with an outline effect.
+
+        Returns:
+        - pygame.Surface: The surface with the text (including its outline) drawn on it.
+        """
         x, y = position
 
         for dx, dy in [
@@ -223,10 +248,16 @@ class Game:
             if ow != 0 or oh != 0
         ]:
             text_surface = self.font.render(text, True, (0, 0, 0))
+            text_surface = text_surface.convert_alpha()
+            text_surface.set_alpha(opacity * 255)
             self.logical_surface.blit(text_surface, (x + dx, y + dy))
 
-        text_surface = self.font.render(text, True, self.FONT_COLOR)
+        text_surface = self.font.render(text, True, (255, 255, 255))
+        text_surface = text_surface.convert_alpha()
+        text_surface.set_alpha(opacity * 255)
         self.logical_surface.blit(text_surface, position)
+
+        return text_surface
 
     def _draw_loading_screen(self, text: str, progress: float) -> None:
         self.logical_surface.fill((0, 0, 0))

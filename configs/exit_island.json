@@ -27,6 +27,7 @@
         },
         {
             "unique_id": "explore_2",
+            "next_phase": "explore_1",
             "name": "Explore 2",
             "img": "explore_2.webp",
             "soundtracks": [

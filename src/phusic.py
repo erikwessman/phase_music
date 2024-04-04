@@ -35,6 +35,7 @@ class Game:
     fade_step = 0
     is_fading = False
     is_fullscreen = True
+    phase_started_at: float = 0
 
     def __init__(self, config: ConfigSchema):
         self.cm = ConfigManager(config)
@@ -95,6 +96,14 @@ class Game:
             elif event.type == pygame.KEYDOWN:
                 self._handle_keydown(event)
 
+        # Automatic phase change
+        if self.curr_phase.value.duration is None:
+            return
+
+        time_in_phase = time.time() - self.phase_started_at
+        if time_in_phase > self.curr_phase.value.duration:
+            self._change_phase(self.curr_phase.next)
+
     def _handle_keydown(self, event: Event) -> None:
         if event.key == getattr(pygame, KEYBIND_FULLSCREEN):
             self._toggle_fullscreen()
@@ -137,6 +146,7 @@ class Game:
         phase.sound.set_volume(1.0)
         phase.sound.play(-1)
         phase.background = pygame.transform.scale(phase.background, self.LOGICAL_SIZE)
+        self.phase_started_at = time.time()
 
     def _change_phase(self, phase_node: Optional[Node]) -> None:
         if self.is_fading:
@@ -153,6 +163,7 @@ class Game:
         phase.sound.set_volume(0.0)
         phase.sound.play(-1)
         phase.background = pygame.transform.scale(phase.background, self.LOGICAL_SIZE)
+        self.phase_started_at = time.time()
 
     def _set_phase(self, phase_node: Optional[Node]) -> None:
         """Update the current phase without fading"""
@@ -172,6 +183,7 @@ class Game:
         phase.background = pygame.transform.scale(phase.background, self.LOGICAL_SIZE)
 
         self.curr_phase = phase_node
+        self.phase_started_at = time.time()
 
     def _draw_phase(self) -> None:
         curr_phase = self.curr_phase.value
@@ -210,11 +222,17 @@ class Game:
             surface = self._draw_text_with_outline(curr_phase.name, phase_position)
 
             # Draw time
-            self._draw_text_with_outline(util.get_local_time(), (surface.get_width() + clock_margin, phase_position[1]), opacity=0.6)
+            self._draw_text_with_outline(
+                util.get_local_time(),
+                (surface.get_width() + clock_margin, phase_position[1]),
+                opacity=0.6,
+            )
 
         pygame.display.flip()
 
-    def _draw_text_with_outline(self, text, position, outline_width: int = 2, opacity: int = 1) -> pygame.Surface:
+    def _draw_text_with_outline(
+        self, text, position, outline_width: int = 2, opacity: int = 1
+    ) -> pygame.Surface:
         """
         Draws text on a pygame surface with an outline effect.
 
@@ -293,6 +311,8 @@ class Game:
         self.__screen.fill((0, 0, 0))
         self.__screen.blit(scaled_surface, (x_position, y_position))
         pygame.display.flip()
+
+        print(time.time() - self.phase_started_at)
 
 
 if __name__ == "__main__":

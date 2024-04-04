@@ -19,9 +19,9 @@
             "next_phase": "explore_2",
             "name": "Explore 1",
             "img": "explore_1.webp",
+            "duration": 9,
             "soundtracks": [
                 "distilled_tropical.mp3",
-                "jungle_shaman.mp3",
                 "drowned_sailors.mp3"
             ]
         },
@@ -29,11 +29,11 @@
             "unique_id": "explore_2",
             "next_phase": "explore_1",
             "name": "Explore 2",
+            "duration": 9,
             "img": "explore_2.webp",
             "soundtracks": [
-                "distilled_tropical.mp3",
                 "jungle_shaman.mp3",
-                "drowned_sailors.mp3"
+                "rope_bridge.mp3"
             ]
         },
         {
@@ -41,7 +41,7 @@
             "name": "Win",
             "img": "explore_1.webp",
             "soundtracks": [
-                "circus.mp3"
+                "caribbean_dream.mp3"
             ],
             "key": "K_w"
         }

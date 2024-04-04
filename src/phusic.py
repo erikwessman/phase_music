@@ -312,8 +312,6 @@ class Game:
         self.__screen.blit(scaled_surface, (x_position, y_position))
         pygame.display.flip()
 
-        print(time.time() - self.phase_started_at)
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
